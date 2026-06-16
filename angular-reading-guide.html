@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Read an Angular Project</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-theme">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #ffffff;
+      --bg2:      #f7f6f3;
+      --bg3:      #eeecea;
+      --sidebar:  #f0efeb;
+      --text:     #1a1918;
+      --text2:    #6b6a65;
+      --border:   rgba(0,0,0,0.10);
+      --accent:   #1D9E75;
+      --accent-d: #0F6E56;
+      --red:      #D85A30;
+      --blue:     #185FA5;
+      --amber:    #A06020;
+      --radius:   8px;
+      --sidebar-w: 260px;
+      --content-w: 740px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #1c1c1a;
+        --bg2:     #252523;
+        --bg3:     #2d2d2b;
+        --sidebar: #222220;
+        --text:    #f0efeb;
+        --text2:   #9b9a95;
+        --border:  rgba(255,255,255,0.10);
+      }
+      #hljs-theme { display: none; }
+      #hljs-dark  { display: block !important; }
+      pre code.hljs { background: #252523 !important; }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg3);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--sidebar);
+      border-right: 0.5px solid var(--border);
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      overflow-y: auto;
+      padding: 1.5rem 0;
+      z-index: 10;
+    }
+
+    .sidebar-logo {
+      padding: 0 1.25rem 1.25rem;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-logo h1 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.2px;
+    }
+
+    .sidebar-logo p {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 3px;
+    }
+
+    .sidebar-logo .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      padding: 5px 10px;
+      background: rgba(29,158,117,.08);
+      border: 1px solid rgba(29,158,117,.22);
+      border-radius: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background .15s, border-color .15s;
+    }
+    .sidebar-logo .home-btn:hover { background: rgba(29,158,117,.16); border-color: rgba(29,158,117,.4); }
+
+    .nav-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text2);
+      padding: 0.75rem 1.25rem 0.25rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 1.25rem;
+      font-size: 13px;
+      color: var(--text2);
+      text-decoration: none;
+      border-radius: 0;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .nav-link:hover { background: var(--bg3); color: var(--text); }
+    .nav-link.active { color: var(--accent); font-weight: 500; background: rgba(29,158,117,0.08); border-right: 2px solid var(--accent); }
+
+    .nav-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--bg3);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    .nav-link.active .nav-step { background: var(--accent); color: #fff; }
+
+    /* ── Main content ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 3rem 2rem;
+      max-width: calc(var(--sidebar-w) + var(--content-w) + 4rem);
+    }
+
+    .content { max-width: var(--content-w); }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(29,158,117,0.1);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p { font-size: 14px; color: var(--text2); }
+
+    .hero-model {
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg2);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .hero-model code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: var(--bg3);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* ── Section ── */
+    .section {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 1.5rem;
+    }
+
+    .section-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 1rem;
+    }
+
+    .section h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .section h3:first-of-type { margin-top: 1rem; }
+
+    .section p { font-size: 14px; color: var(--text); margin-bottom: 0.75rem; }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* ── Flow diagram ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1rem 0;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .flow-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg2);
+      border-left: 2px solid var(--border);
+      position: relative;
+    }
+
+    .flow-item:first-child { border-radius: var(--radius) var(--radius) 0 0; border-left-color: var(--accent); }
+    .flow-item:last-child  { border-radius: 0 0 var(--radius) var(--radius); }
+
+    .flow-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px; height: 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .flow-label { color: var(--text2); font-size: 12px; }
+    .flow-file  { color: var(--accent); font-weight: 600; }
+    .flow-arrow { color: var(--text2); }
+
+    /* ── Code ── */
+    pre {
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    pre code.hljs { border-radius: var(--radius); padding: 1rem 1.25rem; }
+
+    @media (prefers-color-scheme: dark) {
+      pre code.hljs {
+        background: var(--bg2) !important;
+      }
+    }
+
+    code:not(pre code) {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--red);
+    }
+
+    /* ── Callout ── */
+    .callout {
+      display: flex;
+      gap: 10px;
+      background: rgba(29,158,117,0.08);
+      border: 0.5px solid rgba(29,158,117,0.25);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin: 0.75rem 0;
+      font-size: 13px;
+    }
+
+    .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .callout strong { color: var(--accent); }
+
+    .callout.amber {
+      background: rgba(160,96,32,0.08);
+      border-color: rgba(160,96,32,0.25);
+    }
+    .callout.amber strong { color: var(--amber); }
+
+    .callout.blue {
+      background: rgba(24,95,165,0.08);
+      border-color: rgba(24,95,165,0.25);
+    }
+    .callout.blue strong { color: var(--blue); }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; margin: 0.75rem 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--bg2); padding: 8px 12px; text-align: left; font-weight: 600; font-size: 12px; border: 0.5px solid var(--border); }
+    td { padding: 8px 12px; border: 0.5px solid var(--border); vertical-align: top; }
+    tr:hover td { background: var(--bg2); }
+
+    td code { font-size: 12px; }
+
+    /* ── Pattern card ── */
+    .pattern-card {
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .pattern-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg2);
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .pattern-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pattern-title { font-size: 14px; font-weight: 600; }
+    .pattern-body { padding: 0 14px 14px; }
+
+    /* ── Reading order ── */
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 1rem 0;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      background: var(--bg2);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .order-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .badge-easy   { background: rgba(29,158,117,0.12); color: var(--accent); }
+    .badge-medium { background: rgba(160,96,32,0.12);  color: var(--amber); }
+    .badge-hard   { background: rgba(216,90,48,0.12);  color: var(--red); }
+
+    /* ── Three-column model ── */
+    .model-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0;
+      align-items: center;
+      margin: 1rem 0;
+    }
+
+    .model-box {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .model-box .icon { font-size: 20px; margin-bottom: 4px; }
+    .model-box .label { font-size: 12px; font-weight: 600; color: var(--text); }
+    .model-box .sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    .model-arrow { font-size: 18px; color: var(--text2); padding: 0 8px; text-align: center; }
+
+    /* ── Scrollspy behavior ── */
+    .section { transition: box-shadow 0.2s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 1.5rem 1rem; }
+      .model-grid { grid-template-columns: 1fr; }
+      .model-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Angular Reading Guide</h1>
+      <p>Using tai-chinh-angular as the example</p>
+      <a class="home-btn" href="index.html">← Study Hub</a>
+    </div>
+
+    <div class="nav-group-label">Mental Model</div>
+    <a class="nav-link active" href="#mental-model"><span class="nav-step">→</span>The Core Model</a>
+
+    <div class="nav-group-label">Reading Steps</div>
+    <a class="nav-link" href="#step1"><span class="nav-step">1</span>Boot Chain</a>
+    <a class="nav-link" href="#step2"><span class="nav-step">2</span>Read a Component</a>
+    <a class="nav-link" href="#step3"><span class="nav-step">3</span>Trace a Feature</a>
+    <a class="nav-link" href="#step4"><span class="nav-step">4</span>Folder Map</a>
+    <a class="nav-link" href="#step5"><span class="nav-step">5</span>3 Key Patterns</a>
+
+    <div class="nav-group-label">Deep Dives</div>
+    <a class="nav-link" href="#signal-computed"><span class="nav-step">⚡</span>signal vs computed</a>
+
+    <div class="nav-group-label">Reference</div>
+    <a class="nav-link" href="#quickref"><span class="nav-step">≡</span>Quick Reference</a>
+    <a class="nav-link" href="#order"><span class="nav-step">↓</span>Reading Order</a>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="content">
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-tag">📖 Learning Guide</div>
+        <h1>How to Read an Angular Project</h1>
+        <p>A practical guide using the <strong>tai-chinh-angular</strong> personal finance app as a live example. Every concept is linked to a real file you can open right now.</p>
+        <div class="hero-model">
+          <span>📁</span>
+          <span>Project location:</span>
+          <code>E:\Still\day\tai-chinh-angular\src\app\</code>
+        </div>
+      </div>
+
+      <!-- Mental Model -->
+      <section class="section" id="mental-model">
+        <div class="section-tag">Foundation</div>
+        <h2>The Core Mental Model</h2>
+        <p>Angular splits every concern into a separate file. Your job as a reader is to follow <strong>three threads</strong>:</p>
+
+        <div class="model-grid">
+          <div class="model-box">
+            <div class="icon">🗄️</div>
+            <div class="label">Where data lives</div>
+            <div class="sub">service</div>
+          </div>
+          <div class="model-arrow">→</div>
+          <div class="model-box">
+            <div class="icon">⚡</div>
+            <div class="label">How it moves</div>
+            <div class="sub">signal / computed</div>
+          </div>
+          <div class="model-arrow">→</div>
+          <div class="model-box">
+            <div class="icon">🖥️</div>
+            <div class="label">Where it renders</div>
+            <div class="sub">template (.html)</div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-icon">💡</span>
+          <span><strong>Key insight:</strong> In this project, <code>MoneyContainerService</code> holds the data, signals propagate changes, and component templates render the result. When you understand this flow, you can read any Angular file quickly.</span>
+        </div>
+      </section>
+
+      <!-- Step 1 -->
+      <section class="section" id="step1">
+        <div class="section-tag">Step 1</div>
+        <h2>Start at the Boot Chain</h2>
+        <p>Every Angular project has the same 4-file startup sequence. Read these first — they tell you <em>how the app wakes up</em>.</p>
+
+        <div class="flow">
+          <div class="flow-item">
+            <span class="flow-num">1</span>
+            <div>
+              <span class="flow-file">index.html</span>
+              <span class="flow-arrow"> → </span>
+              <span class="flow-label">Browser loads this. Contains <code>&lt;app-root&gt;&lt;/app-root&gt;</code> — the empty shell Angular fills.</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">2</span>
+            <div>
+              <span class="flow-file">src/main.ts</span>
+              <span class="flow-arrow"> → </span>
+              <span class="flow-label">Bootstraps Angular. Just one line: <code>bootstrapApplication(App, appConfig)</code></span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">3</span>
+            <div>
+              <span class="flow-file">src/app/app.config.ts</span>
+              <span class="flow-arrow"> → </span>
+              <span class="flow-label">The service registry. Adding <code>provideHttpClient()</code> here makes HTTP available everywhere.</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">4</span>
+            <div>
+              <span class="flow-file">src/app/app.ts</span>
+              <span class="flow-arrow"> → </span>
+              <span class="flow-label">The root component. Everything you see on screen lives inside this.</span>
+            </div>
+          </div>
+        </div>
+
+        <pre><code class="language-typescript">// main.ts — the simplest file in the project
+bootstrapApplication(App, appConfig)
+// Translation: "Start the app using the App component,
+// configured by appConfig."</code></pre>
+
+        <pre><code class="language-typescript">// app.config.ts — providers = things available everywhere
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    // provideHttpClient()  ← add this when wiring a real API
+  ],
+};</code></pre>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="section" id="step2">
+        <div class="section-tag">Step 2</div>
+        <h2>Read a Component in 3 Passes</h2>
+        <p>Every component has 3 files. Read them in this order every time.</p>
+
+        <h3>Pass 1 — The <code>.ts</code> file (the brain)</h3>
+        <p>Look for exactly 4 things in order, top to bottom:</p>
+
+        <pre><code class="language-typescript">// Example: container-card/container-card.component.ts
+
+// 1. IMPORTS — what does this component depend on?
+import { MoneyContainerService } from '../../core/services/...';
+import { ModalService } from '../../core/services/...';
+
+// 2. STATE — what mutable data does it own locally?
+expanded = signal(false);          // just one piece of local state
+
+// 3. COMPUTED — derived values (auto-update, no side effects)
+typeConfig  = computed(() => CONTAINER_TYPES[this.item().type]);
+totalBalance = computed(() => {
+  const it = this.item();
+  return (it.balance ?? 0) + (it.children ?? [])
+    .reduce((s, c) => s + (c.balance ?? 0), 0);
+});
+
+// 4. ACTIONS — methods the template calls when user does something
+toggle()  { this.expanded.update(v => !v); }
+onEdit(e: Event) {
+  e.stopPropagation();
+  this.modalSvc.openEdit(this.item());  // tells service to open modal
+}</code></pre>
+
+        <div class="callout amber">
+          <span class="callout-icon">⚠️</span>
+          <span><strong>Rule:</strong> If a method doesn't mutate state or call a service, it should be a <code>computed()</code> instead. A method that only reads and returns is a code smell.</span>
+        </div>
+
+        <h3>Pass 2 — The <code>.html</code> file (the mirror)</h3>
+        <p>The template mirrors exactly what the <code>.ts</code> file exposes. Look for these patterns:</p>
+
+        <pre><code class="language-html">&lt;!-- container-card/container-card.component.html --&gt;
+
+&lt;!-- computed() drives the CSS class --&gt;
+&lt;div [class]="'container-card ' + typeConfig().leftCls"&gt;
+
+  &lt;!-- user action → calls a method --&gt;
+  &lt;div class="card-header" (click)="toggle()"&gt;
+
+    &lt;!-- signal value displayed through a pipe --&gt;
+    {{ totalBalance() | currencyVnd }}
+
+  &lt;/div&gt;
+
+  &lt;!-- signal controls what is visible --&gt;
+  @if (expanded()) {
+    &lt;div class="card-body"&gt;
+
+      &lt;!-- data passed DOWN to child component --&gt;
+      &lt;app-container-detail [item]="item()" /&gt;
+
+      &lt;!-- loop over data --&gt;
+      @for (child of item().children; track child.id) {
+        &lt;app-child-card [item]="child" [parentId]="item().id" /&gt;
+      }
+
+    &lt;/div&gt;
+  }
+&lt;/div&gt;</code></pre>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Template syntax</th><th>What it means</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>{{ value() }}</code></td><td>Display a signal's current value</td></tr>
+              <tr><td><code>[input]="expr"</code></td><td>Pass data <strong>into</strong> a child component</td></tr>
+              <tr><td><code>(click)="method()"</code></td><td>Call a method when user acts</td></tr>
+              <tr><td><code>@if (signal()) { }</code></td><td>Show/hide based on signal value</td></tr>
+              <tr><td><code>@for (x of list; track x.id) { }</code></td><td>Loop and render each item</td></tr>
+              <tr><td><code>&lt;app-child /&gt;</code></td><td>Renders another component here</td></tr>
+              <tr><td><code>[class.active]="bool"</code></td><td>Toggle a CSS class based on boolean</td></tr>
+              <tr><td><code>value | pipe</code></td><td>Transform a value for display only</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Pass 3 — The <code>.scss</code> file (appearance only)</h3>
+        <p>Read this <strong>last</strong>, and only when something visual confuses you. It never affects data or behavior.</p>
+      </section>
+
+      <!-- Step 3 -->
+      <section class="section" id="step3">
+        <div class="section-tag">Step 3</div>
+        <h2>Trace a Feature End-to-End</h2>
+        <p>Pick one user action and follow it through every file it touches. This is the most powerful reading technique.</p>
+        <p><strong>Example: user clicks "Thêm tài sản" (Add asset)</strong></p>
+
+        <div class="flow">
+          <div class="flow-item">
+            <span class="flow-num">1</span>
+            <div>
+              <span class="flow-label">User clicks the button in </span>
+              <span class="flow-file">app.html</span>
+              <span class="flow-label"> → triggers </span>
+              <code>(click)="openAdd()"</code>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">2</span>
+            <div>
+              <span class="flow-file">app.ts</span>
+              <span class="flow-arrow"> → </span>
+              <code>openAdd() &#123; this.modalSvc.openAdd(); &#125;</code>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">3</span>
+            <div>
+              <span class="flow-file">modal.service.ts</span>
+              <span class="flow-arrow"> → </span>
+              <code>openAdd() &#123; this.modal.set(&#123; mode: 'add' &#125;); &#125;</code>
+              <span class="flow-label"> — signal changes</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">4</span>
+            <div>
+              <span class="flow-file">app.html</span>
+              <span class="flow-label"> re-renders: </span>
+              <code>@if (modal()) &#123; &lt;app-container-modal /&gt; &#125;</code>
+              <span class="flow-label"> → modal appears</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">5</span>
+            <div>
+              <span class="flow-file">container-modal.component.ts</span>
+              <span class="flow-label"> reads the signal. </span>
+              <code>effect()</code>
+              <span class="flow-label"> fires → form is populated</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">6</span>
+            <div>
+              <span class="flow-label">User fills form, clicks "Lưu" → </span>
+              <span class="flow-file">container-modal.component.html</span>
+              <span class="flow-label"> triggers </span>
+              <code>(click)="onSave()"</code>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">7</span>
+            <div>
+              <span class="flow-file">container-modal.component.ts</span>
+              <span class="flow-label"> calls </span>
+              <code>this.containerSvc.add(payload).subscribe()</code>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">8</span>
+            <div>
+              <span class="flow-file">money-container.service.ts</span>
+              <span class="flow-arrow"> → </span>
+              <code>this._containers.update(...)</code>
+              <span class="flow-label"> + </span>
+              <code>this.persist()</code>
+              <span class="flow-label"> (saves to localStorage)</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">9</span>
+            <div>
+              <span class="flow-file">container-list.component.ts</span>
+              <span class="flow-label"> — </span>
+              <code>filtered = computed()</code>
+              <span class="flow-label"> auto-updates → list re-renders with new item</span>
+            </div>
+          </div>
+          <div class="flow-item">
+            <span class="flow-num">10</span>
+            <div>
+              <span class="flow-file">modal.service.ts</span>
+              <span class="flow-arrow"> → </span>
+              <code>this.modal.set(null)</code>
+              <span class="flow-label"> → modal disappears</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout blue">
+          <span class="callout-icon">📌</span>
+          <span><strong>10 steps across 6 files.</strong> That is the complete story of one feature. Every Angular feature follows this same shape — user event → method → service signal → template re-renders.</span>
+        </div>
+      </section>
+
+      <!-- Step 4 -->
+      <section class="section" id="step4">
+        <div class="section-tag">Step 4</div>
+        <h2>Use the Folder Structure as a Reading Map</h2>
+
+        <pre><code class="language-bash">src/app/
+├── core/                ← READ FIRST — the data foundation
+│   ├── models/          ← What shape does data take? (interfaces, types)
+│   └── services/        ← Where does data live? How does it change?
+│
+├── shared/              ← Read when you see them used in templates
+│   └── pipes/           ← Transform values for display (no logic)
+│
+└── features/            ← Read LAST, one component at a time
+    ├── summary/          ← Simplest: reads service, shows computed values
+    ├── container-list/   ← Has local filter signal, loops over service data
+    ├── container-card/   ← Has local expand signal, passes data to children
+    ├── child-card/       ← Same pattern as container-card, simpler
+    ├── container-detail/ ← Pure display + math, no state (great to start with)
+    ├── container-modal/  ← Most complex: reactive form + effect() sync
+    └── confirm-dialog/   ← Simplest overlay: reads signal, calls service</code></pre>
+
+        <div class="callout">
+          <span class="callout-icon">📐</span>
+          <span><strong>Rule of thumb:</strong> <code>core/</code> = the foundation, read it for the data contracts. <code>features/</code> = the UI, read it for behavior. Start with the simplest feature component (summary or confirm-dialog), not the most complex (container-modal).</span>
+        </div>
+      </section>
+
+      <!-- Step 5 -->
+      <section class="section" id="step5">
+        <div class="section-tag">Step 5</div>
+        <h2>Recognize the 3 Recurring Patterns</h2>
+        <p>Once you see these, you can read any Angular project faster because the same patterns appear everywhere.</p>
+
+        <div class="pattern-card">
+          <div class="pattern-header">
+            <span class="pattern-num">1</span>
+            <span class="pattern-title">Signal + Computed — reactive state</span>
+          </div>
+          <div class="pattern-body">
+            <pre><code class="language-typescript">// In the SERVICE — owns the truth
+private _containers = signal&lt;MoneyContainer[]&gt;([]);
+readonly containers = this._containers.asReadonly(); // expose read-only
+
+// In the COMPONENT — derives from it automatically
+filtered = computed(() =>
+  this.svc.containers().filter(c => c.type === this.activeFilter())
+);</code></pre>
+            <div class="callout">
+              <span class="callout-icon">📏</span>
+              <span><strong>Rule:</strong> <code>signal()</code> = mutable source of truth. <code>computed()</code> = an auto-updating view of it. Never mutate a computed value — only the original signal.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-header">
+            <span class="pattern-num">2</span>
+            <span class="pattern-title">Service as event bus — no Output chains</span>
+          </div>
+          <div class="pattern-body">
+            <pre><code class="language-typescript">// WITHOUT this pattern (bad): Output events bubble up 3 levels
+// child-card → container-card → container-list → app
+
+// WITH this pattern (used here): any component calls the service directly
+// In child-card.component.ts (deep in the tree):
+onEdit(e: Event) {
+  e.stopPropagation();
+  this.modalSvc.openEditChild(this.parentId(), this.item()); // direct call
+}
+
+// In app.ts (at the root), the signal is just read:
+modal = this.modalSvc.modal;
+// @if (modal()) { &lt;app-container-modal /&gt; }</code></pre>
+            <div class="callout">
+              <span class="callout-icon">📏</span>
+              <span><strong>Rule:</strong> When multiple components at different depths need to communicate, a shared service with signals replaces <code>@Output</code> + <code>EventEmitter</code> chains. Look for <code>inject(ModalService)</code> as the sign that a component uses this pattern.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-header">
+            <span class="pattern-num">3</span>
+            <span class="pattern-title">effect() — bridge from signal to non-signal</span>
+          </div>
+          <div class="pattern-body">
+            <pre><code class="language-typescript">// container-modal.component.ts
+constructor() {
+  effect(() => {
+    const s = this.state(); // reads a signal → effect re-runs when it changes
+    if (!s) return;
+
+    // FormGroup is NOT a signal, so we bridge manually:
+    this.form.reset({
+      type:    s.item?.type    ?? 'cash',
+      name:    s.item?.name    ?? '',
+      balance: s.item?.balance ?? 0,
+      // ...
+    });
+  });
+}</code></pre>
+            <div class="callout">
+              <span class="callout-icon">📏</span>
+              <span><strong>Rule:</strong> <code>effect()</code> runs whenever any signal it reads changes. Use it <em>only</em> to bridge signals → non-signal things (like a <code>FormGroup</code>, a chart library, or <code>localStorage</code>). If you find yourself writing <code>effect()</code> to update another signal, use <code>computed()</code> instead.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Signal vs Computed deep dive -->
+      <section class="section" id="signal-computed">
+        <div class="section-tag">Deep Dive</div>
+        <h2>STATE vs COMPUTED — Why Angular Created These</h2>
+
+        <h3>The problem they solve</h3>
+        <p>Before signals, you had plain properties. When one changed, Angular had no idea — it had to check <em>everything</em> on every event. And when you had derived data (filtered lists, totals), you had to manually keep them in sync yourself:</p>
+
+        <pre><code class="language-typescript">// ❌ OLD WAY — plain properties, manual syncing
+class OldContainerList {
+  containers = [];        // raw data
+  filter     = 'all';    // raw filter
+  filtered   = [];       // you maintain this yourself — always in danger of going stale
+
+  setFilter(f) {
+    this.filter = f;
+    this.filtered = this.containers.filter(c => c.type === f); // must remember
+  }
+
+  addItem(item) {
+    this.containers.push(item);
+    this.filtered = this.containers.filter(c => c.type === this.filter); // must remember again
+    // Forget either line → UI shows wrong data. No error, just a silent bug.
+  }
+}</code></pre>
+
+        <div class="callout amber">
+          <span class="callout-icon">⚠️</span>
+          <span><strong>The core bug:</strong> every time <code>containers</code> or <code>filter</code> changes, you must manually remember to update <code>filtered</code>. Add more derived values → more things to forget → more bugs.</span>
+        </div>
+
+        <h3>signal() — a value that announces when it changes</h3>
+        <p>Think of it like an <strong>Excel cell you type into</strong>. The moment you change it, everything that references it knows immediately. Angular no longer has to check everything — it knows exactly what changed.</p>
+
+        <pre><code class="language-typescript">// A signal wraps a value and makes it "watchable"
+filter = signal('all');
+
+// Read it — always call it like a function
+console.log(this.filter());     // 'all'
+
+// Set a new value — Angular is notified instantly
+this.filter.set('bank');
+
+// Update based on the current value
+this.expanded.update(v => !v);  // toggle true/false</code></pre>
+
+        <p>In our project, every piece of mutable state is a signal:</p>
+        <pre><code class="language-typescript">// money-container.service.ts — the actual data
+private _containers = signal&lt;MoneyContainer[]&gt;([...]);
+
+// container-list.component.ts — which filter tab is active
+activeFilter = signal('all');
+
+// container-card.component.ts — is this card expanded?
+expanded = signal(false);</code></pre>
+
+        <div class="callout">
+          <span class="callout-icon">💡</span>
+          <span><strong>Why not a plain variable?</strong> A plain variable changes silently. A signal change tells Angular: <em>"something changed here, re-render anything that depends on me."</em> Without that announcement, Angular doesn't know when to update the screen.</span>
+        </div>
+
+        <h3>computed() — a formula that is always up to date</h3>
+        <p>Think of it like an <strong>Excel formula cell</strong>. <code>=A1 + B1</code> — you never update it manually. Whenever A1 or B1 changes, the formula recalculates itself. You declare the relationship <em>once</em>.</p>
+
+        <pre><code class="language-typescript">// DECLARE the relationship once — Angular handles recalculation forever
+filtered = computed(() =>
+  this.svc.containers().filter(c => c.type === this.activeFilter())
+);</code></pre>
+
+        <p>Now whenever either <code>containers</code> or <code>activeFilter</code> changes, <code>filtered</code> recalculates automatically. You never call a function to update it. You never forget. It is always correct.</p>
+
+        <p>More examples from our project:</p>
+        <pre><code class="language-typescript">// container-card.component.ts
+// "total = my balance + sum of all children balances"
+totalBalance = computed(() => {
+  const it = this.item();
+  return (it.balance ?? 0) +
+    (it.children ?? []).reduce((sum, c) => sum + (c.balance ?? 0), 0);
+});
+
+// summary.component.ts
+// "add up every container to get the 4 summary numbers"
+summary = computed(() => {
+  let asset = 0, loan = 0, invest = 0;
+  this.svc.containers().forEach(c => {
+    [c, ...(c.children ?? [])].forEach(x => {
+      if (x.type === 'loan')                               loan   += Math.abs(x.balance ?? 0);
+      else if (x.type === 'invest' || x.type === 'crypto') invest += (x.balance ?? 0);
+      else                                                 asset  += (x.balance ?? 0);
+    });
+  });
+  return { asset, loan, invest, net: asset + invest - loan };
+});</code></pre>
+
+        <h3>The same problem, two ways</h3>
+        <pre><code class="language-typescript">// ❌ OLD — you manually sync everything, every time
+class OldList {
+  containers = [];
+  filter     = 'all';
+  filtered   = [];   // duplicate state — you own the syncing
+
+  setFilter(f) {
+    this.filter = f;
+    this.filtered = this.containers.filter(c => c.type === f); // easy to forget
+  }
+  addItem(item) {
+    this.containers.push(item);
+    this.filtered = this.containers.filter(c => c.type === this.filter); // easy to forget
+  }
+}
+
+// ✅ NEW — declare the relationship once, Angular handles it forever
+class NewList {
+  containers = signal([]);
+  filter     = signal('all');
+  filtered   = computed(() =>                   // always correct, always in sync
+    this.containers().filter(c => c.type === this.filter())
+  );
+
+  setFilter(f) { this.filter.set(f); }              // filtered auto-updates
+  addItem(item) { this.containers.update(l => [...l, item]); } // filtered auto-updates
+}</code></pre>
+
+        <h3>How they work together — follow the chain</h3>
+        <p>User clicks a filter button → one signal changes → one computed updates → screen updates:</p>
+        <pre><code class="language-typescript">// 1. User clicks "Ngân hàng" button
+this.activeFilter.set('bank')           // signal changes
+
+// 2. filtered reacts automatically (you never call it)
+filtered = computed(() =>
+  this.svc.containers().filter(c => c.type === this.activeFilter())
+)
+
+// 3. Template re-renders automatically
+// @for (item of filtered(); track item.id) { ... }</code></pre>
+
+        <div class="callout blue">
+          <span class="callout-icon">📌</span>
+          <span><strong>Nothing else to do.</strong> No method calls, no manual syncing, no "remember to update X when Y changes." You declared the relationship once — Angular maintains it forever.</span>
+        </div>
+
+        <h3>When to use each — the decision rule</h3>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Situation</th><th>Use</th><th>Example in project</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Data a user action or API call changes</td><td><code>signal()</code></td><td><code>activeFilter</code>, <code>expanded</code>, <code>_containers</code></td></tr>
+              <tr><td>A value calculated from other signals</td><td><code>computed()</code></td><td><code>filtered</code>, <code>totalBalance</code>, <code>summary</code></td></tr>
+              <tr><td>A method that only reads signals and returns a value</td><td>Convert to <code>computed()</code></td><td>Any <code>getTotal()</code> style method</td></tr>
+              <tr><td>A side-effect when a signal changes (syncing a form, localStorage)</td><td><code>effect()</code></td><td>Form reset in <code>container-modal</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <span class="callout-icon">🧪</span>
+          <span><strong>One-line test:</strong> "Does a user action or API call set this value?" → <code>signal()</code>. "Is this just math or filtering on top of other signals?" → <code>computed()</code>.</span>
+        </div>
+      </section>
+
+      <!-- Quick Reference -->
+      <section class="section" id="quickref">
+        <div class="section-tag">Reference</div>
+        <h2>Quick Reference — What to Look For in Any File</h2>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>You see…</th><th>It means…</th><th>Where in this project</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>signal(x)</code></td><td>Mutable state — changes trigger re-renders</td><td><code>money-container.service.ts</code></td></tr>
+              <tr><td><code>computed(() => ...)</code></td><td>Auto-recalculates when signals inside change</td><td><code>container-card.component.ts</code></td></tr>
+              <tr><td><code>effect(() => ...)</code></td><td>Side-effect when signals change</td><td><code>container-modal.component.ts</code></td></tr>
+              <tr><td><code>input.required&lt;T&gt;()</code></td><td>Parent MUST pass this in via <code>[input]="value"</code></td><td><code>child-card.component.ts</code></td></tr>
+              <tr><td><code>inject(SomeService)</code></td><td>This component depends on that service</td><td>Every component</td></tr>
+              <tr><td><code>@if / @for / @switch</code></td><td>Angular built-in control flow (no imports needed)</td><td>Every template</td></tr>
+              <tr><td><code>value | currencyVnd</code></td><td>Pipe — transforms value for display only</td><td><code>summary.component.html</code></td></tr>
+              <tr><td><code>[class.active]="expr"</code></td><td>Adds/removes CSS class based on boolean</td><td><code>container-detail.component.html</code></td></tr>
+              <tr><td><code>(click)="method()"</code></td><td>User event → calls method in the <code>.ts</code> file</td><td>Every template</td></tr>
+              <tr><td><code>ReactiveFormsModule</code> in imports</td><td>This component has a form with validation</td><td><code>container-modal.component.ts</code></td></tr>
+              <tr><td><code>@HostListener(...)</code></td><td>Listens to browser events (keyboard, window, etc.)</td><td><code>container-modal.component.ts</code></td></tr>
+              <tr><td><code>readonly x = this._x.asReadonly()</code></td><td>Service exposes signal read-only to prevent outside mutation</td><td><code>money-container.service.ts</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Reading Order -->
+      <section class="section" id="order">
+        <div class="section-tag">Reading Order</div>
+        <h2>Recommended File Reading Order</h2>
+        <p>Go from simplest to most complex. Each file builds on the previous one.</p>
+
+        <div class="order-list">
+          <div class="order-item"><span class="order-badge badge-easy">Easy</span>core/models/money-container.model.ts</div>
+          <div class="order-item"><span class="order-badge badge-easy">Easy</span>core/services/modal.service.ts</div>
+          <div class="order-item"><span class="order-badge badge-easy">Easy</span>core/services/money-container.service.ts</div>
+          <div class="order-item"><span class="order-badge badge-easy">Easy</span>shared/pipes/currency-vnd.pipe.ts</div>
+          <div class="order-item"><span class="order-badge badge-easy">Easy</span>features/summary/summary.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-easy">Easy</span>features/confirm-dialog/confirm-dialog.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-medium">Medium</span>features/container-detail/container-detail.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-medium">Medium</span>features/child-card/child-card.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-medium">Medium</span>features/container-card/container-card.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-medium">Medium</span>features/container-list/container-list.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-hard">Hard</span>features/container-modal/container-modal.component.ts + .html</div>
+          <div class="order-item"><span class="order-badge badge-hard">Hard</span>app.ts + app.html (ties everything together)</div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-icon">🎯</span>
+          <span><strong>Practical tip:</strong> After reading each file, ask yourself: <em>"What signal does this component read? What signal does it write? What does it render?"</em> If you can answer those three questions, you understand the file.</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Syntax highlighting
+  hljs.highlightAll();
+
+  // Dark mode hljs
+  const darkLink = document.createElement('link');
+  darkLink.rel = 'stylesheet';
+  darkLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+  darkLink.id = 'hljs-dark';
+  darkLink.style.display = 'none';
+  document.head.appendChild(darkLink);
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.getElementById('hljs-theme').disabled = true;
+    darkLink.style.display = '';
+  }
+
+  // Sidebar active link on scroll
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

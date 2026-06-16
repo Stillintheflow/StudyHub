@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docker — From Zero to Big Tech</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #39d3f2;
+    --yellow: #e3b341;
+    --accent: #1f6feb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+  }
+  nav .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  nav .logo h1 { font-size: 17px; color: var(--blue); font-weight: 700; }
+  nav .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  nav .home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    padding: 5px 10px;
+    background: rgba(88,166,255,.08);
+    border: 1px solid rgba(88,166,255,.2);
+    border-radius: 6px;
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s;
+  }
+  nav .home-btn:hover { background: rgba(88,166,255,.16); border-color: rgba(88,166,255,.4); }
+  nav a {
+    display: block;
+    padding: 7px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--text);
+    border-left-color: var(--blue);
+    background: rgba(88,166,255,.06);
+  }
+  nav .section-label {
+    padding: 16px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+
+  /* ── MAIN ── */
+  main {
+    margin-left: 260px;
+    padding: 48px 56px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    padding-top: 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+  h3 { font-size: 18px; color: var(--blue); margin: 32px 0 12px; font-weight: 600; }
+  h4 { font-size: 14px; color: var(--yellow); margin: 20px 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  p { margin-bottom: 14px; color: #c9d1d9; }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 14px 0 20px;
+    position: relative;
+  }
+  code {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12.5px;
+    background: rgba(110,118,129,.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+  pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+
+  /* syntax colors inside pre */
+  .kw { color: #ff7b72; }   /* keyword: FROM, RUN */
+  .cm { color: #8b949e; }   /* comment */
+  .st { color: #a5d6ff; }   /* string */
+  .nm { color: var(--green); } /* number / image name */
+  .fl { color: var(--orange); } /* flag */
+  .cmd { color: var(--cyan); }  /* shell command */
+
+  /* ── LABEL BADGE ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge-blue { background: rgba(88,166,255,.15); color: var(--blue); }
+  .badge-green { background: rgba(63,185,80,.15); color: var(--green); }
+  .badge-orange { background: rgba(210,153,34,.15); color: var(--orange); }
+  .badge-red { background: rgba(248,81,73,.15); color: var(--red); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+    font-size: 14px;
+  }
+  .callout.info { border-color: var(--blue); background: rgba(88,166,255,.07); }
+  .callout.tip  { border-color: var(--green); background: rgba(63,185,80,.07); }
+  .callout.warn { border-color: var(--orange); background: rgba(210,153,34,.07); }
+  .callout.danger { border-color: var(--red); background: rgba(248,81,73,.07); }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .callout.info strong { color: var(--blue); }
+  .callout.tip strong { color: var(--green); }
+  .callout.warn strong { color: var(--orange); }
+  .callout.danger strong { color: var(--red); }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card .icon { font-size: 22px; margin-bottom: 8px; }
+  .card h5 { font-size: 14px; color: var(--text); margin-bottom: 6px; }
+  .card p { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+  /* ── DIAGRAM ── */
+  .diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 18px 0;
+    color: #c9d1d9;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(48,54,61,.6);
+    color: #c9d1d9;
+  }
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 12px; }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step; margin: 16px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .step-num {
+    counter-increment: step;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-num::before { content: counter(step); }
+  .step-body h5 { font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .step-body p { font-size: 13px; margin: 0; }
+
+  /* ── COMPARE ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .compare-col {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .compare-col h5 { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .compare-col ul { padding-left: 16px; font-size: 13px; color: var(--muted); }
+  .compare-col ul li { margin-bottom: 4px; }
+
+  /* ── CHEAT SHEET ── */
+  .cheat { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+  .cheat-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .cheat-block h5 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; }
+  .cheat-block code { display: block; margin-bottom: 6px; font-size: 12px; color: var(--cyan); background: none; padding: 0; }
+  .cheat-block span { font-size: 11px; color: var(--muted); display: block; margin-bottom: 8px; margin-top: -4px; padding-left: 2px; }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .pipe-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 100px;
+    flex-shrink: 0;
+  }
+  .pipe-step .pipe-icon { font-size: 20px; }
+  .pipe-step .pipe-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .pipe-step .pipe-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .pipe-arrow {
+    color: var(--muted);
+    font-size: 18px;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ SIDEBAR ════════════════════════ -->
+<nav>
+  <div class="logo">
+    <h1>🐳 Docker Guide</h1>
+    <p>Zero → Big Tech</p>
+    <a class="home-btn" href="index.html">← Study Hub</a>
+  </div>
+
+  <div class="section-label">Foundations</div>
+  <a href="#why">Why Docker?</a>
+  <a href="#concepts">Core Concepts</a>
+  <a href="#dockerfile">Dockerfile</a>
+  <a href="#commands">Essential Commands</a>
+
+  <div class="section-label">Intermediate</div>
+  <a href="#compose">Docker Compose</a>
+  <a href="#networking">Networking</a>
+  <a href="#volumes">Volumes & Data</a>
+  <a href="#registry">Registries</a>
+
+  <div class="section-label">Big Tech Patterns</div>
+  <a href="#multistage">Multi-Stage Builds</a>
+  <a href="#cicd">CI/CD Pipeline</a>
+  <a href="#kubernetes">Kubernetes Intro</a>
+  <a href="#secrets">Secrets & Config</a>
+  <a href="#realworld">Real Project Setup</a>
+
+  <div class="section-label">Reference</div>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- ════════════════════════ MAIN ════════════════════════ -->
+<main>
+
+<!-- ── HERO ── -->
+<div style="margin-bottom:48px;">
+  <div style="font-size:48px;margin-bottom:16px;">🐳</div>
+  <h1 style="font-size:32px;font-weight:800;margin-bottom:8px;">Docker — From Zero to Big Tech</h1>
+  <p style="font-size:16px;color:var(--muted);max-width:580px;">Everything you will actually encounter on a real project: containers, compose, registries, CI/CD, and Kubernetes basics. Built around your Spring Boot + Oracle stack.</p>
+</div>
+
+<!-- ════════ WHY DOCKER ════════ -->
+<h2 id="why">Why Docker?</h2>
+<p>Before Docker, the #1 complaint was <strong>"it works on my machine"</strong>. A developer runs Java 17, production runs Java 11. Dev uses MySQL, prod uses Oracle. Everything breaks.</p>
+
+<p>Docker solves this by packaging your application <em>together with its entire environment</em> — the OS libraries, runtime, config — into a single portable unit called a <strong>container</strong>.</p>
+
+<div class="compare">
+  <div class="compare-col">
+    <h5 style="color:var(--red);">❌ Without Docker</h5>
+    <ul>
+      <li>"Works on my machine"</li>
+      <li>Manual environment setup per dev</li>
+      <li>Different Java / DB versions</li>
+      <li>Painful onboarding (hours/days)</li>
+      <li>Hard to replicate bugs</li>
+    </ul>
+  </div>
+  <div class="compare-col">
+    <h5 style="color:var(--green);">✅ With Docker</h5>
+    <ul>
+      <li>Same container everywhere</li>
+      <li><code>docker compose up</code> = done</li>
+      <li>Versions locked in image</li>
+      <li>Onboarding in minutes</li>
+      <li>Exact environment reproduced</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Container vs Virtual Machine</h3>
+<div class="diagram">
+  VM                                  Container
+  ┌──────────────────────────┐       ┌──────────────────────────┐
+  │  App A  │  App B         │       │  App A  │  App B         │
+  ├─────────┴────────────────┤       ├─────────┴────────────────┤
+  │   Guest OS (full Linux)  │       │  Container Runtime       │
+  ├──────────────────────────┤       ├──────────────────────────┤
+  │      Hypervisor          │       │      Host OS (Linux)     │
+  ├──────────────────────────┤       ├──────────────────────────┤
+  │      Physical Hardware   │       │      Physical Hardware   │
+  └──────────────────────────┘       └──────────────────────────┘
+  Size: GBs   Startup: minutes       Size: MBs   Startup: seconds
+</div>
+
+<div class="callout info">
+  <strong>Key insight</strong>
+  Containers share the host OS kernel — they are NOT full VMs. This makes them lightweight, fast to start, and cheap to run. A server that runs 5 VMs can run 50+ containers.
+</div>
+
+<!-- ════════ CORE CONCEPTS ════════ -->
+<h2 id="concepts">Core Concepts</h2>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="icon">📦</div>
+    <h5>Image</h5>
+    <p>A read-only blueprint. Like a Java class — it defines structure but doesn't run by itself.</p>
+  </div>
+  <div class="card">
+    <div class="icon">🏃</div>
+    <h5>Container</h5>
+    <p>A running instance of an image. Like a Java object — created from a class (image).</p>
+  </div>
+  <div class="card">
+    <div class="icon">📜</div>
+    <h5>Dockerfile</h5>
+    <p>A recipe to build an image. Step-by-step instructions: base OS, copy files, run commands.</p>
+  </div>
+  <div class="card">
+    <div class="icon">🏪</div>
+    <h5>Registry</h5>
+    <p>A storage server for images. Docker Hub is public. Companies use private registries (ECR, GCR).</p>
+  </div>
+  <div class="card">
+    <div class="icon">💾</div>
+    <h5>Volume</h5>
+    <p>Persistent storage mounted into a container. Data survives container restarts.</p>
+  </div>
+  <div class="card">
+    <div class="icon">🌐</div>
+    <h5>Network</h5>
+    <p>Virtual network connecting containers. Containers talk by service name, not IP address.</p>
+  </div>
+</div>
+
+<h3>The Image Layering Model</h3>
+<p>Every instruction in a Dockerfile creates a <strong>layer</strong>. Layers are cached — if nothing changed, Docker reuses the cache. This is critical for fast builds.</p>
+
+<div class="diagram">
+  ┌──────────────────────────────┐  ← Your app JAR (changes often)
+  ├──────────────────────────────┤  ← COPY dependencies
+  ├──────────────────────────────┤  ← Install Maven packages
+  ├──────────────────────────────┤  ← Set working directory
+  ├──────────────────────────────┤  ← Eclipse Temurin JDK 21
+  └──────────────────────────────┘  ← Ubuntu 22.04 base
+
+  When your code changes → only the TOP layer rebuilds.
+  Bottom layers are cached → build is fast.
+</div>
+
+<!-- ════════ DOCKERFILE ════════ -->
+<h2 id="dockerfile">Dockerfile</h2>
+<p>A <code>Dockerfile</code> is a plain text file with instructions to build your image.</p>
+
+<h3>Basic Dockerfile (Spring Boot)</h3>
+<pre><code><span class="cm"># Start from an official Java 21 image</span>
+<span class="kw">FROM</span> <span class="nm">eclipse-temurin:21-jdk-alpine</span>
+
+<span class="cm"># Set working directory inside container</span>
+<span class="kw">WORKDIR</span> /app
+
+<span class="cm"># Copy the built JAR from your machine into the container</span>
+<span class="kw">COPY</span> target/day-be-0.0.1-SNAPSHOT.jar app.jar
+
+<span class="cm"># Tell Docker which port the app listens on (documentation only)</span>
+<span class="kw">EXPOSE</span> 8080
+
+<span class="cm"># Command that runs when the container starts</span>
+<span class="kw">ENTRYPOINT</span> ["java", "-jar", "app.jar"]</code></pre>
+
+<h3>Common Dockerfile Instructions</h3>
+<table>
+  <tr><th>Instruction</th><th>Purpose</th><th>Example</th></tr>
+  <tr><td><code>FROM</code></td><td>Base image to start from</td><td><code>FROM eclipse-temurin:21</code></td></tr>
+  <tr><td><code>WORKDIR</code></td><td>Set working directory</td><td><code>WORKDIR /app</code></td></tr>
+  <tr><td><code>COPY</code></td><td>Copy files from host → image</td><td><code>COPY pom.xml .</code></td></tr>
+  <tr><td><code>ADD</code></td><td>Like COPY but also handles URLs, tar</td><td><code>ADD app.tar.gz /opt</code></td></tr>
+  <tr><td><code>RUN</code></td><td>Run a command during build</td><td><code>RUN mvn package</code></td></tr>
+  <tr><td><code>ENV</code></td><td>Set environment variable</td><td><code>ENV PORT=8080</code></td></tr>
+  <tr><td><code>ARG</code></td><td>Build-time variable (not in final image)</td><td><code>ARG JAR_FILE=*.jar</code></td></tr>
+  <tr><td><code>EXPOSE</code></td><td>Document which port the app uses</td><td><code>EXPOSE 8080</code></td></tr>
+  <tr><td><code>ENTRYPOINT</code></td><td>Main command — can't be overridden easily</td><td><code>ENTRYPOINT ["java","-jar","app.jar"]</code></td></tr>
+  <tr><td><code>CMD</code></td><td>Default arguments — can be overridden</td><td><code>CMD ["--spring.profiles.active=prod"]</code></td></tr>
+  <tr><td><code>HEALTHCHECK</code></td><td>How to check if container is healthy</td><td><code>HEALTHCHECK CMD curl -f http://localhost:8080/actuator/health</code></td></tr>
+  <tr><td><code>USER</code></td><td>Run as non-root user (security)</td><td><code>USER appuser</code></td></tr>
+</table>
+
+<div class="callout warn">
+  <strong>Best Practice</strong>
+  Never run your app as <code>root</code> inside a container. Always create a non-root user with <code>USER</code>. Big tech security scanners will flag root containers.
+</div>
+
+<!-- ════════ COMMANDS ════════ -->
+<h2 id="commands">Essential Commands</h2>
+
+<h3>Images</h3>
+<pre><code><span class="cm"># Build an image from the Dockerfile in current folder</span>
+<span class="cmd">docker build -t my-app:1.0 .</span>
+
+<span class="cm"># Build with a specific tag and file</span>
+<span class="cmd">docker build -t my-app:latest -f Dockerfile.prod .</span>
+
+<span class="cm"># List all images</span>
+<span class="cmd">docker images</span>
+
+<span class="cm"># Remove an image</span>
+<span class="cmd">docker rmi my-app:1.0</span>
+
+<span class="cm"># Pull image from registry</span>
+<span class="cmd">docker pull eclipse-temurin:21-jdk-alpine</span>
+
+<span class="cm"># Push image to registry</span>
+<span class="cmd">docker push myregistry.com/my-app:1.0</span></code></pre>
+
+<h3>Containers</h3>
+<pre><code><span class="cm"># Run a container (creates + starts)</span>
+<span class="cmd">docker run -d -p 8080:8080 --name my-app my-app:latest</span>
+
+<span class="cm"># Flags explained:</span>
+<span class="cm">#   -d         = detached (run in background)</span>
+<span class="cm">#   -p 8080:8080 = host-port:container-port</span>
+<span class="cm">#   --name     = give it a name</span>
+
+<span class="cm"># List running containers</span>
+<span class="cmd">docker ps</span>
+
+<span class="cm"># List all containers (including stopped)</span>
+<span class="cmd">docker ps -a</span>
+
+<span class="cm"># Stop a container</span>
+<span class="cmd">docker stop my-app</span>
+
+<span class="cm"># Start a stopped container</span>
+<span class="cmd">docker start my-app</span>
+
+<span class="cm"># View logs</span>
+<span class="cmd">docker logs my-app</span>
+<span class="cmd">docker logs -f my-app</span>   <span class="cm"># follow (live stream)</span>
+
+<span class="cm"># Open a shell INSIDE a running container</span>
+<span class="cmd">docker exec -it my-app bash</span>
+
+<span class="cm"># Remove a container</span>
+<span class="cmd">docker rm my-app</span></code></pre>
+
+<div class="callout tip">
+  <strong>Pro tip</strong>
+  <code>docker exec -it &lt;container&gt; bash</code> is your best debugging tool. You can inspect files, check env vars, run commands inside the container as if you SSH'd in.
+</div>
+
+<!-- ════════ COMPOSE ════════ -->
+<h2 id="compose">Docker Compose</h2>
+<p>Running one container is simple. But real apps have multiple services: a backend, a database, a cache, a message broker. <strong>Docker Compose</strong> manages all of them together with one file.</p>
+
+<h3>docker-compose.yml Structure</h3>
+<pre><code><span class="kw">services:</span>                      <span class="cm"># define all your containers here</span>
+
+  <span class="kw">app:</span>                         <span class="cm"># service name (also its hostname on the network)</span>
+    <span class="kw">build:</span> .                   <span class="cm"># build from Dockerfile in current dir</span>
+    <span class="kw">ports:</span>
+      - <span class="st">"8080:8080"</span>            <span class="cm"># host:container</span>
+    <span class="kw">environment:</span>
+      - <span class="st">SPRING_PROFILES_ACTIVE=docker</span>
+      - <span class="st">DB_HOST=oracle</span>         <span class="cm"># refers to the 'oracle' service below by NAME</span>
+    <span class="kw">depends_on:</span>
+      oracle:
+        <span class="kw">condition:</span> service_healthy  <span class="cm"># wait for oracle to be healthy first</span>
+
+  <span class="kw">oracle:</span>
+    <span class="kw">image:</span> <span class="nm">gvenzl/oracle-xe:21-slim</span>
+    <span class="kw">environment:</span>
+      <span class="kw">ORACLE_PASSWORD:</span> <span class="st">${ORACLE_PASSWORD}</span>   <span class="cm"># loaded from .env file</span>
+    <span class="kw">ports:</span>
+      - <span class="st">"1521:1521"</span>
+    <span class="kw">volumes:</span>
+      - <span class="st">oracle-data:/opt/oracle/oradata</span>   <span class="cm"># named volume for persistence</span>
+    <span class="kw">healthcheck:</span>
+      <span class="kw">test:</span> ["CMD", "healthcheck.sh"]
+      <span class="kw">interval:</span> 30s
+      <span class="kw">retries:</span> 10
+
+<span class="kw">volumes:</span>
+  oracle-data:    <span class="cm"># docker manages this, data survives 'docker compose down'</span></code></pre>
+
+<h3>Key Compose Commands</h3>
+<pre><code><span class="cmd">docker compose up -d</span>          <span class="cm"># start all services in background</span>
+<span class="cmd">docker compose down</span>           <span class="cm"># stop and remove containers</span>
+<span class="cmd">docker compose down -v</span>        <span class="cm"># also delete volumes (wipe data!)</span>
+<span class="cmd">docker compose ps</span>             <span class="cm"># status of all services</span>
+<span class="cmd">docker compose logs -f app</span>    <span class="cm"># follow logs for one service</span>
+<span class="cmd">docker compose build</span>          <span class="cm"># rebuild images</span>
+<span class="cmd">docker compose restart app</span>    <span class="cm"># restart one service</span>
+<span class="cmd">docker compose exec app bash</span>  <span class="cm"># shell into a service</span></code></pre>
+
+<!-- ════════ NETWORKING ════════ -->
+<h2 id="networking">Networking</h2>
+<p>When containers are in the same Compose project, they can reach each other by <strong>service name</strong>. No IP addresses needed.</p>
+
+<div class="diagram">
+  Docker Compose Network: "myapp_default"
+  ┌─────────────────────────────────────────────────┐
+  │                                                 │
+  │   ┌──────────────┐       ┌──────────────────┐  │
+  │   │   app        │──────▶│   oracle         │  │
+  │   │   :8080      │       │   :1521          │  │
+  │   │              │       │                  │  │
+  │   │ DB_HOST=oracle│      │ hostname=oracle  │  │
+  │   └──────────────┘       └──────────────────┘  │
+  │                                                 │
+  └─────────────────────────────────────────────────┘
+
+  app connects to oracle using: jdbc:oracle:thin:@//oracle:1521/APPDB
+                                                         ↑
+                                             service name, not localhost!</div>
+
+<h3>Network Types</h3>
+<table>
+  <tr><th>Type</th><th>Use Case</th><th>Notes</th></tr>
+  <tr><td><strong>bridge</strong></td><td>Default for Compose, single host</td><td>Containers talk by service name</td></tr>
+  <tr><td><strong>host</strong></td><td>Container uses host network directly</td><td>No isolation — avoid in production</td></tr>
+  <tr><td><strong>overlay</strong></td><td>Multi-host (Docker Swarm / Kubernetes)</td><td>Used in big tech clusters</td></tr>
+  <tr><td><strong>none</strong></td><td>No network access</td><td>Maximum isolation</td></tr>
+</table>
+
+<!-- ════════ VOLUMES ════════ -->
+<h2 id="volumes">Volumes &amp; Data</h2>
+<p>Containers are <strong>ephemeral</strong> — when a container is deleted, all data inside is gone. Volumes solve this.</p>
+
+<h3>Three Ways to Persist Data</h3>
+<pre><code><span class="cm"># 1. Named Volume — Docker manages the location (recommended)</span>
+<span class="kw">volumes:</span>
+  - <span class="st">oracle-data:/opt/oracle/oradata</span>
+
+<span class="cm"># 2. Bind Mount — maps a host directory into container (good for dev)</span>
+<span class="kw">volumes:</span>
+  - <span class="st">./init:/container-entrypoint-initdb.d</span>  <span class="cm"># left=host, right=container</span>
+
+<span class="cm"># 3. tmpfs — in memory, wiped on stop (for sensitive temp data)</span>
+<span class="kw">tmpfs:</span>
+  - /tmp</code></pre>
+
+<div class="callout tip">
+  <strong>Rule of thumb</strong>
+  Use <strong>named volumes</strong> for databases and persistent app data. Use <strong>bind mounts</strong> during local development to hot-reload code or seed SQL files.
+</div>
+
+<!-- ════════ REGISTRY ════════ -->
+<h2 id="registry">Container Registries</h2>
+<p>A registry stores your Docker images. When you build an image on your laptop and want it to run in production, you <strong>push</strong> it to a registry. Production servers <strong>pull</strong> from there.</p>
+
+<table>
+  <tr><th>Registry</th><th>Used at</th><th>Notes</th></tr>
+  <tr><td><strong>Docker Hub</strong></td><td>Open source, personal projects</td><td>Default. Public images are free</td></tr>
+  <tr><td><strong>Amazon ECR</strong></td><td>AWS big tech</td><td>Integrates with ECS, EKS. IAM auth</td></tr>
+  <tr><td><strong>Google GCR / Artifact Registry</strong></td><td>Google Cloud</td><td>Used in GKE deployments</td></tr>
+  <tr><td><strong>Azure ACR</strong></td><td>Microsoft / Azure</td><td>Integrates with AKS</td></tr>
+  <tr><td><strong>JFrog Artifactory</strong></td><td>Enterprise (very common)</td><td>Stores Docker, Maven, npm in one place</td></tr>
+  <tr><td><strong>Harbor</strong></td><td>On-premise enterprise</td><td>Open source, self-hosted</td></tr>
+  <tr><td><strong>GitHub Container Registry</strong></td><td>GitHub Actions CI/CD</td><td><code>ghcr.io/org/image:tag</code></td></tr>
+</table>
+
+<h3>Push an Image to a Registry</h3>
+<pre><code><span class="cm"># Tag your image with the registry address</span>
+<span class="cmd">docker tag day-be:latest 123456789.dkr.ecr.ap-southeast-1.amazonaws.com/day-be:1.0</span>
+
+<span class="cm"># Login to the registry</span>
+<span class="cmd">aws ecr get-login-password | docker login --username AWS --password-stdin \
+  123456789.dkr.ecr.ap-southeast-1.amazonaws.com</span>
+
+<span class="cm"># Push</span>
+<span class="cmd">docker push 123456789.dkr.ecr.ap-southeast-1.amazonaws.com/day-be:1.0</span></code></pre>
+
+<!-- ════════ MULTI-STAGE ════════ -->
+<h2 id="multistage">Multi-Stage Builds <span class="badge badge-orange">Big Tech Pattern</span></h2>
+<p>In production, you do NOT want build tools (Maven, npm, Go compiler) inside your final image. They add hundreds of MB and create security risks. Multi-stage builds solve this.</p>
+
+<p><strong>Idea:</strong> use one stage to build, a second smaller stage for the final image.</p>
+
+<pre><code><span class="cm"># ── Stage 1: BUILD ──────────────────────────────────────</span>
+<span class="kw">FROM</span> <span class="nm">eclipse-temurin:21-jdk-alpine</span> <span class="kw">AS</span> builder
+<span class="kw">WORKDIR</span> /build
+
+<span class="cm"># Cache dependencies first (only re-downloads when pom.xml changes)</span>
+<span class="kw">COPY</span> pom.xml .
+<span class="kw">RUN</span> mvn dependency:go-offline -q
+
+<span class="cm"># Then copy source and build</span>
+<span class="kw">COPY</span> src ./src
+<span class="kw">RUN</span> mvn package -DskipTests -q
+
+
+<span class="cm"># ── Stage 2: RUNTIME ────────────────────────────────────</span>
+<span class="kw">FROM</span> <span class="nm">eclipse-temurin:21-jre-alpine</span>   <span class="cm"># JRE only, no compiler</span>
+<span class="kw">WORKDIR</span> /app
+
+<span class="cm"># Create non-root user (security)</span>
+<span class="kw">RUN</span> addgroup -S appgroup && adduser -S appuser -G appgroup
+<span class="kw">USER</span> appuser
+
+<span class="cm"># Copy ONLY the JAR from the build stage</span>
+<span class="kw">COPY</span> --from=builder /build/target/*.jar app.jar
+
+<span class="kw">HEALTHCHECK</span> --interval=30s --timeout=5s \
+  <span class="kw">CMD</span> wget -qO- http://localhost:8080/api/actuator/health || exit 1
+
+<span class="kw">EXPOSE</span> 8080
+<span class="kw">ENTRYPOINT</span> ["java", "-jar", "app.jar"]</code></pre>
+
+<div class="compare">
+  <div class="compare-col">
+    <h5>Single-stage image</h5>
+    <ul>
+      <li>JDK + Maven + source + JAR</li>
+      <li>~500 MB image</li>
+      <li>Maven, compiler in production</li>
+      <li>Larger attack surface</li>
+    </ul>
+  </div>
+  <div class="compare-col">
+    <h5 style="color:var(--green);">Multi-stage image</h5>
+    <ul>
+      <li>JRE + JAR only</li>
+      <li>~180 MB image</li>
+      <li>No build tools in prod</li>
+      <li>Minimal attack surface</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════════ CI/CD ════════ -->
+<h2 id="cicd">CI/CD Pipeline <span class="badge badge-blue">You'll see this daily</span></h2>
+<p>In big tech, no one manually builds and deploys. Everything goes through a <strong>pipeline</strong>: code is pushed, a system automatically builds, tests, packages into a Docker image, and deploys.</p>
+
+<div class="pipeline">
+  <div class="pipe-step">
+    <div class="pipe-icon">💻</div>
+    <div class="pipe-name">git push</div>
+    <div class="pipe-label">Developer</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">🔨</div>
+    <div class="pipe-name">Build & Test</div>
+    <div class="pipe-label">CI (mvn test)</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">🐳</div>
+    <div class="pipe-name">Docker Build</div>
+    <div class="pipe-label">docker build</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">🏪</div>
+    <div class="pipe-name">Push Registry</div>
+    <div class="pipe-label">ECR / GCR</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step">
+    <div class="pipe-icon">🚀</div>
+    <div class="pipe-name">Deploy</div>
+    <div class="pipe-label">K8s / ECS</div>
+  </div>
+</div>
+
+<h3>GitHub Actions Example</h3>
+<pre><code><span class="cm"># .github/workflows/deploy.yml</span>
+<span class="kw">name:</span> Build and Deploy
+
+<span class="kw">on:</span>
+  <span class="kw">push:</span>
+    <span class="kw">branches:</span> [main]
+
+<span class="kw">jobs:</span>
+  <span class="kw">build:</span>
+    <span class="kw">runs-on:</span> ubuntu-latest
+    <span class="kw">steps:</span>
+      - <span class="kw">uses:</span> actions/checkout@v4
+
+      - <span class="kw">name:</span> Set up Java 21
+        <span class="kw">uses:</span> actions/setup-java@v4
+        <span class="kw">with:</span>
+          <span class="kw">java-version:</span> <span class="st">'21'</span>
+
+      - <span class="kw">name:</span> Run tests
+        <span class="kw">run:</span> mvn test
+
+      - <span class="kw">name:</span> Build Docker image
+        <span class="kw">run:</span> docker build -t day-be:<span class="st">${{ github.sha }}</span> .
+
+      - <span class="kw">name:</span> Login to Amazon ECR
+        <span class="kw">uses:</span> aws-actions/amazon-ecr-login@v2
+
+      - <span class="kw">name:</span> Push to ECR
+        <span class="kw">run:</span> |
+          docker tag day-be:<span class="st">${{ github.sha }}</span> \
+            <span class="st">${{ secrets.ECR_URI }}</span>/day-be:<span class="st">${{ github.sha }}</span>
+          docker push <span class="st">${{ secrets.ECR_URI }}</span>/day-be:<span class="st">${{ github.sha }}</span></code></pre>
+
+<div class="callout info">
+  <strong>Image Tagging Strategy</strong>
+  In big tech, images are tagged with the Git commit SHA (<code>abc1234</code>), not just <code>latest</code>. This means every deploy is traceable — you can always roll back to an exact commit.
+</div>
+
+<!-- ════════ KUBERNETES ════════ -->
+<h2 id="kubernetes">Kubernetes (K8s) — What You'll Hear <span class="badge badge-red">Big Tech</span></h2>
+<p>Docker runs containers on <em>one machine</em>. <strong>Kubernetes</strong> runs containers across <em>hundreds of machines</em> — automatically handling scaling, restarts, load balancing, and rolling deployments. Every big tech company uses it.</p>
+
+<h3>Key Kubernetes Concepts</h3>
+<div class="card-grid">
+  <div class="card">
+    <div class="icon">🫛</div>
+    <h5>Pod</h5>
+    <p>The smallest unit. One or more containers running together. Like a single <code>docker run</code>.</p>
+  </div>
+  <div class="card">
+    <div class="icon">📋</div>
+    <h5>Deployment</h5>
+    <p>Manages pods. Declares: "I want 3 replicas of day-be:1.0 always running."</p>
+  </div>
+  <div class="card">
+    <div class="icon">🔌</div>
+    <h5>Service</h5>
+    <p>Stable network endpoint for a set of pods. Like a load balancer in front of your pods.</p>
+  </div>
+  <div class="card">
+    <div class="icon">⚙️</div>
+    <h5>ConfigMap</h5>
+    <p>Stores config as key-value pairs. Injected as env vars or files into pods.</p>
+  </div>
+  <div class="card">
+    <div class="icon">🔐</div>
+    <h5>Secret</h5>
+    <p>Like ConfigMap but for sensitive data (passwords, tokens). Base64 encoded.</p>
+  </div>
+  <div class="card">
+    <div class="icon">📦</div>
+    <h5>Namespace</h5>
+    <p>Logical isolation. Teams use separate namespaces: <code>dev</code>, <code>staging</code>, <code>prod</code>.</p>
+  </div>
+</div>
+
+<div class="diagram">
+  Kubernetes Cluster
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Namespace: production                                          │
+  │                                                                 │
+  │  Deployment: day-be  (replicas: 3)                              │
+  │  ┌──────────┐  ┌──────────┐  ┌──────────┐                      │
+  │  │  Pod 1   │  │  Pod 2   │  │  Pod 3   │  ← K8s restarts      │
+  │  │ day-be   │  │ day-be   │  │ day-be   │    crashed pods      │
+  │  │ :8080    │  │ :8080    │  │ :8080    │    automatically     │
+  │  └────┬─────┘  └────┬─────┘  └────┬─────┘                      │
+  │       └─────────────┼─────────────┘                            │
+  │                     │                                           │
+  │            Service: day-be-svc                                  │
+  │            (load balances across all 3 pods)                    │
+  │                     │                                           │
+  │               Ingress / Load Balancer                           │
+  │               (public internet entry)                           │
+  └─────────────────────────────────────────────────────────────────┘</div>
+
+<h3>Basic K8s Deployment YAML</h3>
+<pre><code><span class="kw">apiVersion:</span> apps/v1
+<span class="kw">kind:</span> Deployment
+<span class="kw">metadata:</span>
+  <span class="kw">name:</span> day-be
+  <span class="kw">namespace:</span> production
+<span class="kw">spec:</span>
+  <span class="kw">replicas:</span> <span class="nm">3</span>                    <span class="cm"># run 3 copies</span>
+  <span class="kw">selector:</span>
+    <span class="kw">matchLabels:</span>
+      <span class="kw">app:</span> day-be
+  <span class="kw">template:</span>
+    <span class="kw">spec:</span>
+      <span class="kw">containers:</span>
+        - <span class="kw">name:</span> day-be
+          <span class="kw">image:</span> <span class="nm">123456.dkr.ecr.ap-southeast-1.amazonaws.com/day-be:abc1234</span>
+          <span class="kw">ports:</span>
+            - <span class="kw">containerPort:</span> <span class="nm">8080</span>
+          <span class="kw">env:</span>
+            - <span class="kw">name:</span> DB_PASSWORD
+              <span class="kw">valueFrom:</span>
+                <span class="kw">secretKeyRef:</span>           <span class="cm"># read from K8s Secret, not hardcoded</span>
+                  <span class="kw">name:</span> oracle-credentials
+                  <span class="kw">key:</span> password
+          <span class="kw">resources:</span>
+            <span class="kw">requests:</span>                  <span class="cm"># minimum guaranteed resources</span>
+              <span class="kw">cpu:</span> <span class="st">"250m"</span>
+              <span class="kw">memory:</span> <span class="st">"512Mi"</span>
+            <span class="kw">limits:</span>                    <span class="cm"># maximum allowed</span>
+              <span class="kw">cpu:</span> <span class="st">"1000m"</span>
+              <span class="kw">memory:</span> <span class="st">"1Gi"</span>
+          <span class="kw">livenessProbe:</span>             <span class="cm"># K8s restarts if this fails</span>
+            <span class="kw">httpGet:</span>
+              <span class="kw">path:</span> /api/actuator/health
+              <span class="kw">port:</span> <span class="nm">8080</span>
+            <span class="kw">initialDelaySeconds:</span> <span class="nm">30</span>
+            <span class="kw">periodSeconds:</span> <span class="nm">10</span></code></pre>
+
+<!-- ════════ SECRETS ════════ -->
+<h2 id="secrets">Secrets &amp; Config Management <span class="badge badge-red">Never hardcode</span></h2>
+<p>The biggest mistake junior devs make: putting passwords in code. This gets you fired at big tech companies (and leaks make the news).</p>
+
+<h4>The 12-Factor App Rule: Config in Environment</h4>
+<pre><code><span class="cm"># ❌ NEVER DO THIS</span>
+spring:
+  datasource:
+    password: MyPassword123
+
+<span class="cm"># ✅ DO THIS — read from environment variable</span>
+spring:
+  datasource:
+    password: <span class="st">${DB_PASSWORD}</span>    <span class="cm"># Spring reads env var DB_PASSWORD</span></code></pre>
+
+<h3>How Secrets Flow in Production</h3>
+<div class="steps">
+  <div class="step">
+    <div class="step-num"></div>
+    <div class="step-body">
+      <h5>Developer stores secret in AWS Secrets Manager / Vault</h5>
+      <p>Passwords, API keys, certificates — never in Git.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num"></div>
+    <div class="step-body">
+      <h5>CI/CD pipeline reads the secret at deploy time</h5>
+      <p>GitHub Actions Secrets, GitLab CI/CD Variables, Jenkins Credentials.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num"></div>
+    <div class="step-body">
+      <h5>Secret is injected as an environment variable into the container</h5>
+      <p>The container never has a config file with the password — it reads <code>$DB_PASSWORD</code>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num"></div>
+    <div class="step-body">
+      <h5>Spring Boot reads the env var via <code>${DB_PASSWORD}</code></h5>
+      <p>Application code never sees where the secret came from.</p>
+    </div>
+  </div>
+</div>
+
+<div class="callout danger">
+  <strong>Career-ending mistake</strong>
+  Never commit <code>.env</code>, <code>application-prod.yml</code>, or any file with real passwords to Git. Always add them to <code>.gitignore</code>. GitHub scans public repos for secrets automatically.
+</div>
+
+<!-- ════════ REAL WORLD ════════ -->
+<h2 id="realworld">Real Project Setup (Your Stack)</h2>
+<p>Here is how your Spring Boot + Oracle project would look fully Dockerized.</p>
+
+<h3>Project Structure</h3>
+<pre><code>day-be/
+├── Dockerfile                  multi-stage: build → JRE-only runtime
+├── docker-compose.yml          local dev: app + oracle together
+├── docker-compose.prod.yml     prod overrides: image from registry, no build
+├── .env                        local secrets (gitignored)
+└── src/main/resources/
+    ├── application.yml         base config with ${env} placeholders
+    ├── application-local.yml   local-only overrides (gitignored)
+    └── application-docker.yml  used when SPRING_PROFILES_ACTIVE=docker</code></pre>
+
+<h3>application-docker.yml</h3>
+<pre><code>spring:
+  datasource:
+    <span class="cm"># 'oracle' = the service name in docker-compose, not localhost!</span>
+    url: jdbc:oracle:thin:@//oracle:1521/<span class="st">${ORACLE_DATABASE:APPDB}</span>
+    username: <span class="st">${APP_USER:appuser}</span>
+    password: <span class="st">${APP_USER_PASSWORD}</span></code></pre>
+
+<h3>Dockerfile (Production-Ready)</h3>
+<pre><code><span class="kw">FROM</span> <span class="nm">eclipse-temurin:21-jdk-alpine</span> <span class="kw">AS</span> builder
+<span class="kw">WORKDIR</span> /build
+<span class="kw">COPY</span> pom.xml .
+<span class="kw">RUN</span> mvn dependency:go-offline -q
+<span class="kw">COPY</span> src ./src
+<span class="kw">RUN</span> mvn package -DskipTests -q
+
+<span class="kw">FROM</span> <span class="nm">eclipse-temurin:21-jre-alpine</span>
+<span class="kw">WORKDIR</span> /app
+<span class="kw">RUN</span> addgroup -S app && adduser -S appuser -G app
+<span class="kw">USER</span> appuser
+<span class="kw">COPY</span> --from=builder /build/target/*.jar app.jar
+<span class="kw">EXPOSE</span> 8080
+<span class="kw">ENTRYPOINT</span> ["java", \
+  <span class="st">"-Djava.security.egd=file:/dev/./urandom"</span>, \
+  <span class="st">"-jar"</span>, <span class="st">"app.jar"</span>]</code></pre>
+
+<!-- ════════ CHEAT SHEET ════════ -->
+<h2 id="cheatsheet">Cheat Sheet</h2>
+
+<div class="cheat">
+  <div class="cheat-block">
+    <h5>Build & Images</h5>
+    <code>docker build -t name:tag .</code>
+    <span>Build image from Dockerfile</span>
+    <code>docker images</code>
+    <span>List all images</span>
+    <code>docker rmi name:tag</code>
+    <span>Remove image</span>
+    <code>docker pull image:tag</code>
+    <span>Download from registry</span>
+    <code>docker push image:tag</code>
+    <span>Upload to registry</span>
+  </div>
+  <div class="cheat-block">
+    <h5>Containers</h5>
+    <code>docker run -d -p 8080:8080 name</code>
+    <span>Run detached, map ports</span>
+    <code>docker ps</code>
+    <span>List running containers</span>
+    <code>docker logs -f name</code>
+    <span>Follow container logs</span>
+    <code>docker exec -it name bash</code>
+    <span>Shell into container</span>
+    <code>docker stop / rm name</code>
+    <span>Stop / delete container</span>
+  </div>
+  <div class="cheat-block">
+    <h5>Docker Compose</h5>
+    <code>docker compose up -d</code>
+    <span>Start all services</span>
+    <code>docker compose down</code>
+    <span>Stop and remove</span>
+    <code>docker compose down -v</code>
+    <span>Also delete volumes</span>
+    <code>docker compose logs -f svc</code>
+    <span>Follow logs for service</span>
+    <code>docker compose exec svc bash</code>
+    <span>Shell into service</span>
+  </div>
+  <div class="cheat-block">
+    <h5>Cleanup</h5>
+    <code>docker system prune</code>
+    <span>Remove unused containers/images</span>
+    <code>docker volume prune</code>
+    <span>Remove unused volumes</span>
+    <code>docker image prune -a</code>
+    <span>Remove all unused images</span>
+    <code>docker stats</code>
+    <span>Live CPU/memory usage</span>
+    <code>docker inspect name</code>
+    <span>Full container metadata</span>
+  </div>
+</div>
+
+<h3>Mental Models to Remember</h3>
+<table>
+  <tr><th>Docker concept</th><th>Analogy</th></tr>
+  <tr><td>Image</td><td>Java <strong>class</strong> definition (blueprint)</td></tr>
+  <tr><td>Container</td><td>Java <strong>object</strong> (running instance)</td></tr>
+  <tr><td>Dockerfile</td><td>Recipe / constructor instructions</td></tr>
+  <tr><td>Registry</td><td>Maven Central — but for Docker images</td></tr>
+  <tr><td>Volume</td><td>External hard drive plugged into a container</td></tr>
+  <tr><td>Network</td><td>Private LAN — containers talk by hostname</td></tr>
+  <tr><td>Compose</td><td>Spring Boot auto-config — wires everything together</td></tr>
+  <tr><td>Kubernetes Pod</td><td>A single <code>docker run</code></td></tr>
+  <tr><td>K8s Deployment</td><td>Process manager — keeps N pods alive</td></tr>
+  <tr><td>K8s Service</td><td>Load balancer in front of pods</td></tr>
+</table>
+
+<div style="margin-top:60px;padding:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-align:center;">
+  <div style="font-size:28px;margin-bottom:8px;">🎯</div>
+  <p style="font-size:15px;color:var(--text);margin:0;font-weight:600;">Learning path recommendation</p>
+  <p style="font-size:13px;color:var(--muted);margin:8px 0 0;">Docker basics → Docker Compose → Dockerfile optimization → CI/CD → Kubernetes (kubectl, deployments, services)</p>
+</div>
+
+</main>
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('h2[id]');
+  const links = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

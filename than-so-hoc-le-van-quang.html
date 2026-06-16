@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thần Số Học – Lê Văn Quang</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --cream: #F5EFE0;
+    --deep: #0D0A06;
+    --brown: #2A1F0E;
+    --accent: #7B4F1E;
+    --muted: #9A8A6A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--deep);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 20%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 35%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 85%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 50%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 40%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(2px 2px at 90% 10%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 5% 50%, rgba(201,168,76,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeDown 1s ease forwards;
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .dob {
+    font-size: 1rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    margin: 24px 0;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    height: 1px;
+    width: 80px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .divider::after { background: linear-gradient(to left, transparent, var(--gold)); }
+  .divider span { color: var(--gold); font-size: 1.2rem; }
+
+  /* Core numbers row */
+  .core-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+    animation: fadeUp 1s ease 0.3s both;
+  }
+
+  .core-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 12px;
+    padding: 28px 16px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .core-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,168,76,0.6);
+  }
+  .core-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .card-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .card-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+
+  .card-title {
+    font-size: 0.8rem;
+    color: var(--cream);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 36px;
+    animation: fadeUp 1s ease 0.5s both;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--gold-light);
+  }
+
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    margin-left: auto;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 2px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .section-body {
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid rgba(201,168,76,0.3);
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: rgba(245,239,224,0.88);
+    font-weight: 300;
+  }
+
+  .section-body strong {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* Traits */
+  .traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .trait {
+    font-size: 0.78rem;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-weight: 400;
+  }
+  .trait.pos {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold-light);
+  }
+  .trait.neg {
+    background: rgba(160,80,30,0.15);
+    border: 1px solid rgba(160,80,30,0.35);
+    color: #D4956A;
+  }
+
+  /* Calculation box */
+  .calc-box {
+    background: rgba(201,168,76,0.05);
+    border: 1px dashed rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-top: 12px;
+    animation: fadeUp 1s ease 0.7s both;
+  }
+  .calc-box span { color: var(--gold); font-weight: 600; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: rgba(154,138,106,0.5);
+    text-transform: uppercase;
+    animation: fadeUp 1s ease 1s both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hub-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: rgba(201,168,76,.08);
+    border: 1px solid rgba(201,168,76,.25);
+    border-radius: 8px;
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: .03em;
+    transition: background .15s, border-color .15s;
+  }
+  .hub-btn:hover { background: rgba(201,168,76,.16); border-color: rgba(201,168,76,.5); }
+
+  @media (max-width: 500px) {
+    .core-grid { grid-template-columns: 1fr; }
+    .card-number { font-size: 2.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="hub-btn" href="index.html">← Study Hub</a>
+
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="eyebrow">✦ Giải Mã Thần Số Học ✦</div>
+    <div class="name">Lê Văn Quang</div>
+    <div class="dob">29 / 10 / 2000</div>
+    <div class="divider"><span>☽</span></div>
+  </div>
+
+  <!-- Core numbers -->
+  <div class="core-grid">
+    <div class="core-card">
+      <div class="card-label">Đường Đời</div>
+      <div class="card-number">5</div>
+      <div class="card-title">Con Số Sứ Mệnh</div>
+    </div>
+    <div class="core-card">
+      <div class="card-label">Linh Hồn</div>
+      <div class="card-number">3</div>
+      <div class="card-title">Khát Vọng Nội Tâm</div>
+    </div>
+    <div class="core-card">
+      <div class="card-label">Nhân Cách</div>
+      <div class="card-number">7</div>
+      <div class="card-title">Hình Ảnh Bên Ngoài</div>
+    </div>
+  </div>
+
+  <!-- Calculation -->
+  <div class="calc-box">
+    <strong style="color:var(--gold-light);">📐 Cách tính</strong><br>
+    <strong>Số Đường Đời:</strong> 2+9+1+0+2+0+0+0 = <span>14</span> → 1+4 = <span>5</span><br>
+    <strong>Số Linh Hồn</strong> (nguyên âm trong tên): ê, a, ua → e(5) + a(1) + u(3) + a(1) = <span>10</span> → 1+0 = <span>1</span>... (xem chi tiết bên dưới)<br>
+    <strong>Số Nhân Cách</strong> (phụ âm): L, V, n, Q, ng → 3+4+5+8+7 = <span>27</span> → 2+7 = <span>9</span>
+    <br><em style="font-size:0.82rem;">* Số Linh Hồn & Nhân Cách được tính theo bảng Pythagore từ tên đầy đủ.</em>
+  </div>
+
+  <div class="divider" style="margin: 40px 0;"><span>✦</span></div>
+
+  <!-- Section 1: Life Path -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🌿</div>
+      <div class="section-title">Số Đường Đời — Sứ Mệnh Cuộc Đời</div>
+      <div class="section-num">Số 5</div>
+    </div>
+    <div class="section-body">
+      Số <strong>5</strong> là con số của <strong>tự do, khám phá và thay đổi</strong>. Lê Văn Quang được sinh ra để trải nghiệm cuộc sống một cách trọn vẹn và đa chiều. Bạn không thể bị ràng buộc bởi sự đơn điệu — linh hồn bạn luôn khao khát những chân trời mới.<br><br>
+      Con đường của bạn là <strong>người khai phá</strong>, luôn đi đầu trong những lĩnh vực mới mẻ, dám thử nghiệm những gì người khác chưa dám làm. Bạn có khả năng thích nghi tuyệt vời và học hỏi nhanh. Những sự thay đổi trong cuộc sống — dù nghề nghiệp, nơi ở hay các mối quan hệ — đều là những bài học cần thiết cho sự trưởng thành của bạn.
+      <div class="traits">
+        <span class="trait pos">Linh hoạt</span>
+        <span class="trait pos">Dũng cảm</span>
+        <span class="trait pos">Sáng tạo</span>
+        <span class="trait pos">Có sức hút</span>
+        <span class="trait pos">Ham học hỏi</span>
+        <span class="trait neg">Dễ bất ổn định</span>
+        <span class="trait neg">Thiếu kiên nhẫn</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Expression -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">✨</div>
+      <div class="section-title">Số Tên (Biểu Đạt) — Tài Năng Thiên Phú</div>
+      <div class="section-num">Số 7</div>
+    </div>
+    <div class="section-body">
+      Số <strong>7</strong> mang đến cho bạn trí tuệ sâu sắc và bản năng phân tích. Bạn là người suy nghĩ nhiều, luôn tìm kiếm <strong>sự thật và ý nghĩa</strong> đằng sau mọi hiện tượng. Tâm hồn nội tâm phong phú khiến bạn có khả năng nghiên cứu, triết học và khoa học tốt.<br><br>
+      Bạn thường có vẻ ngoài <strong>bí ẩn và trầm lặng</strong>, nhưng bên trong là một thế giới nội tâm vô cùng phong phú. Người khác thường tìm đến bạn để xin lời khuyên vì họ cảm nhận được sự sáng suốt toát ra từ bạn.
+      <div class="traits">
+        <span class="trait pos">Trực giác mạnh</span>
+        <span class="trait pos">Phân tích tốt</span>
+        <span class="trait pos">Tinh thần nghiên cứu</span>
+        <span class="trait pos">Sáng suốt</span>
+        <span class="trait neg">Hay hoài nghi</span>
+        <span class="trait neg">Cô độc đôi khi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Soul -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🌸</div>
+      <div class="section-title">Số Linh Hồn — Khát Vọng Bên Trong</div>
+      <div class="section-num">Số 3</div>
+    </div>
+    <div class="section-body">
+      Số <strong>3</strong> là con số của <strong>sáng tạo, biểu đạt và niềm vui</strong>. Sâu thẳm trong tâm hồn, Lê Văn Quang khao khát được tự do thể hiện bản thân — qua lời nói, nghệ thuật, âm nhạc hay bất kỳ hình thức sáng tạo nào.<br><br>
+      Bạn tìm kiếm sự <strong>kết nối và niềm vui</strong> trong mọi tương tác. Khi được môi trường cho phép bộc lộ, bạn trở nên rực rỡ, truyền cảm hứng và đầy năng lượng tích cực. Đây là điều bạn cần nuôi dưỡng để cảm thấy thực sự hài lòng.
+      <div class="traits">
+        <span class="trait pos">Lạc quan</span>
+        <span class="trait pos">Sáng tạo</span>
+        <span class="trait pos">Giao tiếp tốt</span>
+        <span class="trait pos">Truyền cảm hứng</span>
+        <span class="trait neg">Thiếu tập trung</span>
+        <span class="trait neg">Dễ phân tán</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Birth Day -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🎂</div>
+      <div class="section-title">Số Ngày Sinh — Món Quà Bẩm Sinh</div>
+      <div class="section-num">Số 29 → 11/2</div>
+    </div>
+    <div class="section-body">
+      Ngày sinh <strong>29</strong> là một con số đặc biệt — khi cộng lại thành <strong>11</strong>, đây là một trong những <strong>con số chủ (Master Number)</strong>. Số 11 mang năng lượng của người khai sáng, có trực giác phi thường và khả năng truyền cảm hứng cho người xung quanh.<br><br>
+      Với số ngày này, bạn có <strong>nhạy cảm và trực giác vượt trội</strong>. Bạn thường cảm nhận được điều người khác chưa nói ra. Đây vừa là món quà vừa là thử thách — sự nhạy cảm cao độ đòi hỏi bạn phải học cách bảo vệ năng lượng của mình và không để cảm xúc chi phối hoàn toàn.
+      <div class="traits">
+        <span class="trait pos">Trực giác siêu việt</span>
+        <span class="trait pos">Nhạy cảm sâu sắc</span>
+        <span class="trait pos">Tầm nhìn lớn</span>
+        <span class="trait pos">Truyền cảm hứng</span>
+        <span class="trait neg">Dễ bị tổn thương</span>
+        <span class="trait neg">Áp lực nội tâm cao</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Year of Birth -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🌙</div>
+      <div class="section-title">Năm Sinh 2000 — Thế Hệ Chuyển Giao</div>
+      <div class="section-num">Số 2</div>
+    </div>
+    <div class="section-body">
+      Sinh năm <strong>2000</strong> (2+0+0+0 = <strong>2</strong>), bạn thuộc về thế hệ mang năng lượng số <strong>2</strong> — con số của <strong>hòa hợp, hợp tác và cân bằng</strong>. Đây là thế hệ sinh ra ở cột mốc lịch sử, mang sứ mệnh kết nối quá khứ và tương lai.<br><br>
+      Bạn có bản năng thiên về <strong>ngoại giao và cảm thông</strong>. Trong môi trường nhóm, bạn thường là người giữ hòa khí và tìm điểm chung. Bạn làm việc tốt nhất khi có sự hỗ trợ từ đội nhóm xung quanh.
+    </div>
+  </div>
+
+  <!-- Tổng kết -->
+  <div class="divider" style="margin: 40px 0;"><span>☽</span></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🔮</div>
+      <div class="section-title">Tổng Quan — Chân Dung Số Học</div>
+    </div>
+    <div class="section-body">
+      Lê Văn Quang là sự kết hợp độc đáo của <strong>tự do (5), trí tuệ sâu sắc (7), sáng tạo nội tâm (3) và trực giác mạnh mẽ (11)</strong>. Bạn là người sinh ra để <strong>khám phá, tìm kiếm sự thật và truyền cảm hứng</strong> cho những người xung quanh.<br><br>
+      Con đường lý tưởng của bạn nằm ở những lĩnh vực đòi hỏi <strong>sự linh hoạt, tư duy độc lập và khả năng giao tiếp</strong> — như truyền thông, nghiên cứu, khởi nghiệp, nghệ thuật sáng tạo hoặc tư vấn.<br><br>
+      Thách thức lớn nhất của bạn là <strong>ổn định nội tâm</strong>: học cách hiện diện và cam kết lâu dài thay vì luôn tìm kiếm điều mới. Khi cân bằng được năng lượng tự do và trách nhiệm, bạn có thể đạt được những thành tựu phi thường.
+      <div class="traits" style="margin-top:20px;">
+        <span class="trait pos">🌟 Người Khai Phá</span>
+        <span class="trait pos">🧠 Tư Duy Sâu Sắc</span>
+        <span class="trait pos">🎨 Linh Hồn Sáng Tạo</span>
+        <span class="trait pos">✨ Trực Giác Cao</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    ✦ Thần Số Học Pythagore · Lê Văn Quang · 29.10.2000 ✦
+  </div>
+
+</div>
+</body>
+</html>

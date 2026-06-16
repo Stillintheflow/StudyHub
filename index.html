@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Hub</title>
+<style>
+:root {
+  --bg:       #0a0e1a;
+  --surface:  #111827;
+  --surface2: #1a2235;
+  --border:   #1e2d45;
+  --text:     #e2e8f0;
+  --muted:    #64748b;
+  --accent:   #4f8ef7;
+  --green:    #34d399;
+  --purple:   #a78bfa;
+  --gold:     #fbbf24;
+  --red:      #f87171;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+header p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color .2s, transform .15s, box-shadow .2s;
+  position: relative;
+  outline: none;
+}
+
+.card:hover, .card:focus {
+  border-color: var(--card-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.card:active {
+  transform: translateY(0);
+}
+
+.card-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.card-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.card-key {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-family: monospace;
+}
+
+.card-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--card-color) 15%, transparent);
+  color: var(--card-color);
+  width: fit-content;
+}
+
+footer {
+  margin-top: 48px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+kbd {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-family: monospace;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Study Hub</h1>
+  <p>Chọn bài học hoặc nhấn phím tắt <kbd>1</kbd> – <kbd>5</kbd></p>
+</header>
+
+<div class="grid">
+
+  <a class="card" href="vocabmaster.html" style="--card-color: #4f8ef7" tabindex="1" data-key="1">
+    <span class="card-key">1</span>
+    <div class="card-icon">📚</div>
+    <div class="card-title">VocabMaster</div>
+    <div class="card-desc">Học từ vựng tiếng Anh–Việt qua flashcard và matching game. Thuật toán SRS (SM-2) tự điều chỉnh lịch ôn tập.</div>
+    <span class="card-tag">Từ vựng · SRS</span>
+  </a>
+
+  <a class="card" href="docker-guide.html" style="--card-color: #34d399" tabindex="2" data-key="2">
+    <span class="card-key">2</span>
+    <div class="card-icon">🐳</div>
+    <div class="card-title">Docker Guide</div>
+    <div class="card-desc">Hướng dẫn Docker từ zero đến Big Tech. Sidebar navigation, ví dụ thực tế, lệnh hay dùng.</div>
+    <span class="card-tag">DevOps · Docker</span>
+  </a>
+
+  <a class="card" href="angular-reading-guide.html" style="--card-color: #f87171" tabindex="3" data-key="3">
+    <span class="card-key">3</span>
+    <div class="card-icon">⚡</div>
+    <div class="card-title">Angular Reading Guide</div>
+    <div class="card-desc">Cách đọc hiểu một dự án Angular: boot chain, component, signal/computed, và các pattern phổ biến.</div>
+    <span class="card-tag">Frontend · Angular</span>
+  </a>
+
+  <a class="card" href="than-so-hoc-le-van-quang.html" style="--card-color: #fbbf24" tabindex="4" data-key="4">
+    <span class="card-key">4</span>
+    <div class="card-icon">✨</div>
+    <div class="card-title">Thần Số Học</div>
+    <div class="card-desc">Trang thần số học cá nhân – Lê Văn Quang. Phong cách cổ điển với nền tối và chữ vàng.</div>
+    <span class="card-tag">Cá nhân</span>
+  </a>
+
+  <a class="card" href="reactjs-guide.html" style="--card-color: #61dafb" tabindex="5" data-key="5">
+    <span class="card-key">5</span>
+    <div class="card-icon">⚛</div>
+    <div class="card-title">React.js Guide</div>
+    <div class="card-desc">Toàn bộ kiến thức React cần biết: JSX, hooks, context, performance, router, state management.</div>
+    <span class="card-tag">Frontend · React</span>
+  </a>
+
+</div>
+
+<footer>
+  Nhấn <kbd>1</kbd>–<kbd>5</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
+</footer>
+
+<script>
+document.addEventListener('keydown', e => {
+  if (['1','2','3','4','5'].includes(e.key)) {
+    const card = document.querySelector(`.card[data-key="${e.key}"]`);
+    if (card) card.click();
+  }
+});
+</script>
+
+</body>
+</html>

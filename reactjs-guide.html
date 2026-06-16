@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React.js — Complete Knowledge Guide</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #39d3f2;
+    --yellow: #e3b341;
+    --pink: #f778ba;
+    --accent: #1f6feb;
+    --react: #61dafb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 268px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+  }
+  nav .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  nav .logo h1 { font-size: 16px; color: var(--react); font-weight: 700; letter-spacing: -.3px; }
+  nav .logo p { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  nav .home-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 6px 10px;
+    background: rgba(97,218,251,.08);
+    border: 1px solid rgba(97,218,251,.2);
+    border-radius: 6px;
+    color: var(--react);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s;
+    width: fit-content;
+  }
+  nav .home-btn:hover {
+    background: rgba(97,218,251,.16);
+    border-color: rgba(97,218,251,.4);
+  }
+  nav .logo .version {
+    display: inline-block;
+    font-size: 10px;
+    background: rgba(97,218,251,.12);
+    color: var(--react);
+    padding: 1px 7px;
+    border-radius: 20px;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  nav a {
+    display: block;
+    padding: 6px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--text);
+    border-left-color: var(--react);
+    background: rgba(97,218,251,.06);
+  }
+  nav .section-label {
+    padding: 16px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+  nav::-webkit-scrollbar { width: 4px; }
+  nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 268px; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--react), var(--purple));
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 100;
+    transition: transform .1s;
+  }
+
+  /* ── MAIN ── */
+  main {
+    margin-left: 268px;
+    padding: 56px 64px;
+    max-width: 980px;
+    width: 100%;
+  }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    padding-top: 64px;
+    border-top: 1px solid var(--border);
+    margin-top: 64px;
+    scroll-margin-top: 20px;
+  }
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+  h3 {
+    font-size: 19px;
+    color: var(--react);
+    margin: 36px 0 12px;
+    font-weight: 600;
+    scroll-margin-top: 20px;
+  }
+  h4 {
+    font-size: 13px;
+    color: var(--yellow);
+    margin: 22px 0 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  p { margin-bottom: 14px; color: #c9d1d9; }
+  ul, ol { margin: 8px 0 16px 22px; color: #c9d1d9; }
+  li { margin-bottom: 5px; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* ── CODE ── */
+  pre {
+    background: #161b22 !important;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 14px 0 22px;
+    position: relative;
+  }
+  pre .lang-label {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-family: sans-serif;
+  }
+  code {
+    font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: rgba(110,118,129,.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+  pre code { background: none; padding: 0; font-size: 13px; color: inherit; }
+  pre code.hljs { background: transparent !important; padding: 0; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge-react  { background: rgba(97,218,251,.15); color: var(--react); }
+  .badge-green  { background: rgba(63,185,80,.15);  color: var(--green); }
+  .badge-orange { background: rgba(210,153,34,.15); color: var(--orange); }
+  .badge-red    { background: rgba(248,81,73,.15);  color: var(--red); }
+  .badge-purple { background: rgba(188,140,255,.15);color: var(--purple); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .callout.info   { border-color: var(--blue);   background: rgba(88,166,255,.07); }
+  .callout.tip    { border-color: var(--green);  background: rgba(63,185,80,.07); }
+  .callout.warn   { border-color: var(--orange); background: rgba(210,153,34,.07); }
+  .callout.danger { border-color: var(--red);    background: rgba(248,81,73,.07); }
+  .callout.react  { border-color: var(--react);  background: rgba(97,218,251,.07); }
+  .callout strong { display: block; margin-bottom: 5px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+  .callout.info strong   { color: var(--blue); }
+  .callout.tip strong    { color: var(--green); }
+  .callout.warn strong   { color: var(--orange); }
+  .callout.danger strong { color: var(--red); }
+  .callout.react strong  { color: var(--react); }
+  .callout p { margin: 0; color: inherit; }
+  .callout ul { margin-top: 6px; }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    transition: border-color .15s;
+  }
+  .card:hover { border-color: var(--react); }
+  .card .icon { font-size: 24px; margin-bottom: 10px; }
+  .card h5 { font-size: 14px; color: var(--text); margin-bottom: 6px; font-weight: 600; }
+  .card p  { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+  /* ── DIAGRAM ── */
+  .diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 26px;
+    font-family: 'Fira Code', monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    margin: 18px 0;
+    color: #c9d1d9;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 26px;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: #c9d1d9;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  td code { font-size: 12px; }
+
+  /* ── HOOK CARD ── */
+  .hook-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .hook-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .hook-card .hook-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--purple);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .hook-card p { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+  /* ── COMPARE ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .compare > div { }
+  .compare .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .label-bad  { background: rgba(248,81,73,.15);  color: var(--red); }
+  .label-good { background: rgba(63,185,80,.15);  color: var(--green); }
+  .label-a    { background: rgba(88,166,255,.15); color: var(--blue); }
+  .label-b    { background: rgba(188,140,255,.15);color: var(--purple); }
+
+  /* ── LIFECYCLE VISUAL ── */
+  .lifecycle {
+    display: flex;
+    gap: 0;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .lifecycle-phase {
+    flex: 1;
+    padding: 16px 14px;
+    background: var(--surface2);
+    text-align: center;
+    border-right: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .lifecycle-phase:last-child { border-right: none; }
+  .lifecycle-phase .phase-name {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .lifecycle-phase .hook-pill {
+    display: inline-block;
+    background: rgba(188,140,255,.15);
+    color: var(--purple);
+    font-family: monospace;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin: 2px;
+  }
+  .phase-mount .phase-name { color: var(--green); }
+  .phase-update .phase-name { color: var(--yellow); }
+  .phase-unmount .phase-name { color: var(--red); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding-bottom: 60px;
+  }
+
+  /* ── FLOATING HOME (mobile) ── */
+  #home-fab {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 200;
+    background: var(--surface);
+    border: 1px solid rgba(97,218,251,.3);
+    border-radius: 50px;
+    padding: 10px 16px;
+    color: var(--react);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 6px;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    transition: background .15s;
+  }
+  #home-fab:hover { background: var(--surface2); }
+
+  @media (max-width: 900px) {
+    nav { display: none; }
+    main { margin-left: 0; padding: 32px 24px; }
+    .hook-grid, .compare { grid-template-columns: 1fr; }
+    #progress-bar { left: 0; }
+    #home-fab { display: flex; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<a id="home-fab" href="index.html">← Study Hub</a>
+
+<!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+<nav id="sidebar">
+  <div class="logo">
+    <h1>⚛ React.js Guide</h1>
+    <p>Complete Knowledge Reference</p>
+    <span class="version">React 18 / 19</span>
+    <a class="home-btn" href="index.html">← Study Hub</a>
+  </div>
+
+  <div class="section-label">Foundation</div>
+  <a href="#overview">Overview & Mental Model</a>
+  <a href="#jsx">JSX</a>
+  <a href="#components">Components & Props</a>
+  <a href="#state">State — useState</a>
+
+  <div class="section-label">Core Hooks</div>
+  <a href="#useeffect">useEffect</a>
+  <a href="#useref">useRef</a>
+  <a href="#usecontext">useContext</a>
+  <a href="#usememo">useMemo & useCallback</a>
+  <a href="#custom-hooks">Custom Hooks</a>
+
+  <div class="section-label">Rendering</div>
+  <a href="#rendering">Conditional Rendering</a>
+  <a href="#lists">Lists & Keys</a>
+  <a href="#events">Event Handling</a>
+  <a href="#forms">Forms</a>
+
+  <div class="section-label">Patterns</div>
+  <a href="#lifting">Lifting State Up</a>
+  <a href="#composition">Composition Patterns</a>
+  <a href="#context-pattern">Context API Pattern</a>
+
+  <div class="section-label">Advanced</div>
+  <a href="#performance">Performance</a>
+  <a href="#error-boundary">Error Boundaries</a>
+  <a href="#suspense">Suspense & Lazy</a>
+  <a href="#portals">Portals & Refs</a>
+
+  <div class="section-label">Ecosystem</div>
+  <a href="#router">React Router v6</a>
+  <a href="#state-mgmt">State Management</a>
+  <a href="#rules">Rules & Best Practices</a>
+</nav>
+
+<!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
+<main>
+
+<!-- ═══ OVERVIEW ═══ -->
+<h2 id="overview">Overview &amp; Mental Model</h2>
+
+<p>React is a <strong>UI library</strong> for building component-based interfaces. Its core promise: <em>given the same state, your UI always looks the same</em>. React re-renders components when state or props change, and efficiently updates only what changed in the real DOM via a virtual DOM diff.</p>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="icon">🧩</div>
+    <h5>Component-Based</h5>
+    <p>UI split into reusable, self-contained pieces. Each component owns its own logic and appearance.</p>
+  </div>
+  <div class="card">
+    <div class="icon">🔄</div>
+    <h5>Declarative</h5>
+    <p>Describe WHAT your UI should look like. React figures out HOW to update the DOM efficiently.</p>
+  </div>
+  <div class="card">
+    <div class="icon">⚡</div>
+    <h5>Reactive State</h5>
+    <p>State changes trigger automatic re-renders. No manual DOM manipulation needed.</p>
+  </div>
+  <div class="card">
+    <div class="icon">🪝</div>
+    <h5>Hooks-First</h5>
+    <p>All logic lives in function components via hooks. Class components are legacy.</p>
+  </div>
+</div>
+
+<h3>The React Mental Model</h3>
+
+<div class="diagram">
+  User Action / Timer / Network
+         │
+         ▼
+  ┌─────────────────────┐
+  │   setState(newVal)  │  ← triggers re-render
+  └─────────────────────┘
+         │
+         ▼
+  ┌─────────────────────┐
+  │  Component Function │  ← called again with new state
+  │  returns JSX        │
+  └─────────────────────┘
+         │
+         ▼
+  ┌─────────────────────┐
+  │  React Virtual DOM  │  ← diffs old vs new JSX tree
+  └─────────────────────┘
+         │
+         ▼
+  ┌─────────────────────┐
+  │   Real DOM update   │  ← only changed nodes updated
+  └─────────────────────┘
+</div>
+
+<div class="callout react">
+  <strong>Core Rule</strong>
+  <p>Components are just functions: they take <strong>props</strong> as input and return <strong>JSX</strong> as output. Keep them pure — same props + state should always produce the same output.</p>
+</div>
+
+<!-- ═══ JSX ═══ -->
+<h2 id="jsx">JSX</h2>
+
+<p>JSX is a syntax extension that lets you write HTML-like code inside JavaScript. Babel transforms it into <code>React.createElement()</code> calls at build time.</p>
+
+<h3>JSX Rules</h3>
+
+<table>
+  <tr><th>Rule</th><th>Example</th></tr>
+  <tr><td>Must return a <strong>single root</strong> element</td><td><code>&lt;&gt;...&lt;/&gt;</code> or a wrapping div</td></tr>
+  <tr><td>All tags must be <strong>closed</strong></td><td><code>&lt;img /&gt;</code>, <code>&lt;br /&gt;</code></td></tr>
+  <tr><td>Use <code>className</code> not <code>class</code></td><td><code>className="btn"</code></td></tr>
+  <tr><td>Use <code>htmlFor</code> not <code>for</code></td><td><code>htmlFor="email"</code></td></tr>
+  <tr><td>JavaScript in <strong>curly braces</strong></td><td><code>{user.name}</code>, <code>{2 + 2}</code></td></tr>
+  <tr><td>Inline styles are <strong>objects</strong></td><td><code>style={{ color: 'red' }}</code></td></tr>
+  <tr><td>Comments via <code>{/* */}</code></td><td><code>{/* this is a comment */}</code></td></tr>
+</table>
+
+<pre><code class="language-jsx">// ✅ Valid JSX
+function Profile() {
+  const name = "Alice";
+  const isAdmin = true;
+
+  return (
+    &lt;&gt;  {/* Fragment — no extra DOM node */}
+      &lt;h1 className="title"&gt;{name}&lt;/h1&gt;
+      &lt;p style={{ color: 'gray', fontSize: 14 }}&gt;
+        Role: {isAdmin ? 'Admin' : 'User'}
+      &lt;/p&gt;
+      &lt;img src="/avatar.png" alt="avatar" /&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre><span class="lang-label" style="position:relative;top:0;right:0;display:inline-block;float:right;margin-top:-26px;margin-right:4px;font-size:10px;color:#8b949e;font-weight:600;letter-spacing:.06em">JSX</span>
+
+<h3>Expressions in JSX</h3>
+
+<pre><code class="language-jsx">function Demo({ items, user }) {
+  return (
+    &lt;div&gt;
+      {/* String interpolation */}
+      &lt;p&gt;Hello, {user.name}!&lt;/p&gt;
+
+      {/* Call functions */}
+      &lt;p&gt;{formatDate(new Date())}&lt;/p&gt;
+
+      {/* Ternary for conditional */}
+      {user.isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}
+
+      {/* Short-circuit for optional UI */}
+      {items.length &gt; 0 &amp;&amp; &lt;List items={items} /&gt;}
+
+      {/* Map to render lists */}
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ COMPONENTS ═══ -->
+<h2 id="components">Components &amp; Props</h2>
+
+<p>A component is a function that accepts <strong>props</strong> (an object of inputs) and returns JSX. Component names must start with a capital letter so React can tell them apart from native HTML tags.</p>
+
+<h3>Defining Components</h3>
+
+<pre><code class="language-jsx">// Arrow function component
+const Button = ({ label, onClick, variant = 'primary' }) =&gt; {
+  return (
+    &lt;button className={`btn btn-${variant}`} onClick={onClick}&gt;
+      {label}
+    &lt;/button&gt;
+  );
+};
+
+// Named function component (preferred for debugging)
+function UserCard({ name, avatar, bio, children }) {
+  return (
+    &lt;div className="card"&gt;
+      &lt;img src={avatar} alt={name} /&gt;
+      &lt;h2&gt;{name}&lt;/h2&gt;
+      &lt;p&gt;{bio}&lt;/p&gt;
+      {children}  {/* slots — whatever the parent puts between tags */}
+    &lt;/div&gt;
+  );
+}
+
+// Usage
+function App() {
+  return (
+    &lt;UserCard name="Alice" avatar="/alice.png" bio="Engineer"&gt;
+      &lt;Button label="Follow" onClick={() =&gt; alert('followed!')} /&gt;
+    &lt;/UserCard&gt;
+  );
+}
+</code></pre>
+
+<h3>Props Rules</h3>
+
+<div class="callout warn">
+  <strong>Props are Read-Only</strong>
+  <p>Never mutate props directly. Props flow <strong>down</strong> from parent to child (one-way data flow). To communicate back up, pass a callback function as a prop.</p>
+</div>
+
+<pre><code class="language-jsx">// Passing data DOWN via props
+&lt;Counter initialCount={0} onFinish={handleFinish} /&gt;
+
+// Inside Counter — call the callback to communicate UP
+function Counter({ initialCount, onFinish }) {
+  const [count, setCount] = useState(initialCount);
+  return (
+    &lt;button onClick={() =&gt; {
+      const next = count + 1;
+      setCount(next);
+      if (next &gt;= 10) onFinish();  // ← child tells parent
+    }}&gt;
+      Count: {count}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+
+<h3>Prop Patterns</h3>
+
+<pre><code class="language-jsx">// Spread props
+const inputProps = { type: 'email', placeholder: 'Enter email', required: true };
+&lt;input {...inputProps} /&gt;
+
+// Default values via destructuring
+function Tag({ color = 'blue', size = 'md', children }) { ... }
+
+// Rest props forwarding (useful for wrapper components)
+function Input({ label, error, ...rest }) {
+  return (
+    &lt;div&gt;
+      &lt;label&gt;{label}&lt;/label&gt;
+      &lt;input {...rest} /&gt;  {/* forward all remaining props */}
+      {error &amp;&amp; &lt;span className="error"&gt;{error}&lt;/span&gt;}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ STATE ═══ -->
+<h2 id="state">State — useState</h2>
+
+<p><strong>State</strong> is data that can change over time and cause the component to re-render. <code>useState</code> is the hook for local component state.</p>
+
+<pre><code class="language-jsx">import { useState } from 'react';
+
+function Counter() {
+  // [currentValue, setterFunction] = useState(initialValue)
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(count - 1)}&gt;−&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(0)}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+
+<h3>Functional Updates</h3>
+
+<p>When the next state depends on the previous state, always use the <strong>functional form</strong> to avoid stale closure bugs:</p>
+
+<pre><code class="language-jsx">// ❌ Bug: can use stale 'count' inside async handlers or event batching
+setCount(count + 1);
+setCount(count + 1);  // both read the same 'count', result = count + 1 not + 2
+
+// ✅ Correct: callback always gets the latest state
+setCount(prev =&gt; prev + 1);
+setCount(prev =&gt; prev + 1);  // result = count + 2
+</code></pre>
+
+<h3>State with Objects &amp; Arrays</h3>
+
+<div class="callout warn">
+  <strong>Always create new objects/arrays — never mutate</strong>
+  <p>React uses reference equality to detect changes. Mutating in place won't trigger a re-render.</p>
+</div>
+
+<pre><code class="language-jsx">// ── Objects ──
+const [user, setUser] = useState({ name: 'Alice', age: 30 });
+
+// ❌ Wrong — mutation, no re-render
+user.age = 31;
+setUser(user);
+
+// ✅ Correct — new object with spread
+setUser(prev =&gt; ({ ...prev, age: 31 }));
+
+// ── Arrays ──
+const [todos, setTodos] = useState([]);
+
+// Add item
+setTodos(prev =&gt; [...prev, { id: Date.now(), text: 'New todo' }]);
+
+// Remove item
+setTodos(prev =&gt; prev.filter(t =&gt; t.id !== id));
+
+// Update item
+setTodos(prev =&gt; prev.map(t =&gt; t.id === id ? { ...t, done: true } : t));
+</code></pre>
+
+<h3>Multiple State Variables vs. Object State</h3>
+
+<pre><code class="language-jsx">// ✅ Multiple variables — easier to update independently
+const [name, setName] = useState('');
+const [email, setEmail] = useState('');
+const [loading, setLoading] = useState(false);
+
+// ✅ Object state — when values are always updated together
+const [form, setForm] = useState({ name: '', email: '' });
+const updateField = (field, value) =&gt;
+  setForm(prev =&gt; ({ ...prev, [field]: value }));
+</code></pre>
+
+<h3>useReducer — for complex state logic</h3>
+
+<pre><code class="language-jsx">import { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment': return { count: state.count + 1 };
+    case 'decrement': return { count: state.count - 1 };
+    case 'reset':     return { count: 0 };
+    default: throw new Error('Unknown action: ' + action.type);
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+  return (
+    &lt;&gt;
+      &lt;p&gt;{state.count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'increment' })}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'decrement' })}&gt;−&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ useEffect ═══ -->
+<h2 id="useeffect">useEffect</h2>
+
+<p><code>useEffect</code> lets you run <strong>side effects</strong> after rendering: data fetching, subscriptions, timers, manual DOM manipulation, or anything that reaches outside the component.</p>
+
+<div class="lifecycle">
+  <div class="lifecycle-phase phase-mount">
+    <div class="phase-name">Mount</div>
+    <span class="hook-pill">useEffect(() =&gt; {}, [])</span>
+  </div>
+  <div class="lifecycle-phase phase-update">
+    <div class="phase-name">Update</div>
+    <span class="hook-pill">useEffect(() =&gt; {}, [dep])</span>
+  </div>
+  <div class="lifecycle-phase phase-unmount">
+    <div class="phase-name">Unmount</div>
+    <span class="hook-pill">return () =&gt; cleanup()</span>
+  </div>
+</div>
+
+<pre><code class="language-jsx">import { useState, useEffect } from 'react';
+
+// 1. Run EVERY render (no dependency array)
+useEffect(() =&gt; {
+  document.title = `Count: ${count}`;
+});
+
+// 2. Run ONCE on mount (empty array)
+useEffect(() =&gt; {
+  fetchUserData();
+}, []);
+
+// 3. Run when specific value changes
+useEffect(() =&gt; {
+  fetchPostsByUser(userId);
+}, [userId]);  // re-runs whenever userId changes
+
+// 4. Cleanup on unmount (return a function)
+useEffect(() =&gt; {
+  const timer = setInterval(() =&gt; setTick(t =&gt; t + 1), 1000);
+  const sub = socket.subscribe(channel, onMessage);
+
+  return () =&gt; {
+    clearInterval(timer);  // ← runs before next effect OR on unmount
+    sub.unsubscribe();
+  };
+}, [channel]);
+</code></pre>
+
+<h3>Fetching Data Pattern</h3>
+
+<pre><code class="language-jsx">function UserProfile({ userId }) {
+  const [user, setUser]       = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+
+  useEffect(() =&gt; {
+    let cancelled = false;  // handle race conditions
+
+    async function load() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchUser(userId);
+        if (!cancelled) setUser(data);
+      } catch (err) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () =&gt; { cancelled = true; };  // cleanup: ignore stale response
+  }, [userId]);
+
+  if (loading) return &lt;Spinner /&gt;;
+  if (error)   return &lt;p&gt;Error: {error}&lt;/p&gt;;
+  return &lt;div&gt;{user.name}&lt;/div&gt;;
+}
+</code></pre>
+
+<div class="callout tip">
+  <strong>Tip — prefer data-fetching libraries</strong>
+  <p>In production, use <strong>TanStack Query</strong> (React Query) or <strong>SWR</strong> instead of raw useEffect for fetching. They handle caching, deduplication, refetching, and loading states automatically.</p>
+</div>
+
+<!-- ═══ useRef ═══ -->
+<h2 id="useref">useRef</h2>
+
+<p><code>useRef</code> serves two purposes: (1) accessing DOM elements directly, (2) storing mutable values that persist across renders <strong>without causing a re-render</strong> when changed.</p>
+
+<pre><code class="language-jsx">import { useRef, useEffect } from 'react';
+
+// ── 1. DOM access ──
+function AutoFocusInput() {
+  const inputRef = useRef(null);
+
+  useEffect(() =&gt; {
+    inputRef.current.focus();  // direct DOM access after mount
+  }, []);
+
+  return &lt;input ref={inputRef} placeholder="Auto-focused" /&gt;;
+}
+
+// ── 2. Mutable value (like an instance variable) ──
+function StopWatch() {
+  const [time, setTime] = useState(0);
+  const intervalRef = useRef(null);  // stores the interval ID without re-rendering
+
+  const start = () =&gt; {
+    intervalRef.current = setInterval(() =&gt; setTime(t =&gt; t + 1), 1000);
+  };
+  const stop = () =&gt; clearInterval(intervalRef.current);
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;{time}s&lt;/p&gt;
+      &lt;button onClick={start}&gt;Start&lt;/button&gt;
+      &lt;button onClick={stop}&gt;Stop&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+
+// ── 3. Track previous value ──
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() =&gt; { ref.current = value; });
+  return ref.current;  // value from previous render
+}
+</code></pre>
+
+<!-- ═══ useContext ═══ -->
+<h2 id="usecontext">useContext</h2>
+
+<p>Context provides a way to share values across the component tree <strong>without passing props through every level</strong> (prop drilling).</p>
+
+<pre><code class="language-jsx">import { createContext, useContext, useState } from 'react';
+
+// 1. Create the context
+const ThemeContext = createContext('light');  // default value
+
+// 2. Provide it at a high level
+function App() {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    &lt;ThemeContext.Provider value={{ theme, setTheme }}&gt;
+      &lt;Layout /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+// 3. Consume it anywhere in the tree — no prop drilling
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return (
+    &lt;button onClick={() =&gt; setTheme(t =&gt; t === 'light' ? 'dark' : 'light')}&gt;
+      Current: {theme}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+
+<div class="callout warn">
+  <strong>Performance Note</strong>
+  <p>Every component consuming a context re-renders when the context value changes. Split contexts by concern (e.g., separate ThemeContext and AuthContext) so unrelated updates don't cause unnecessary re-renders.</p>
+</div>
+
+<!-- ═══ useMemo / useCallback ═══ -->
+<h2 id="usememo">useMemo &amp; useCallback</h2>
+
+<p>Both hooks <strong>memoize</strong> a value so it isn't recalculated on every render. Use them when recalculation is expensive or when referential equality matters (passing callbacks to memoized children).</p>
+
+<pre><code class="language-jsx">import { useMemo, useCallback, memo } from 'react';
+
+// useMemo — caches a computed VALUE
+function DataTable({ data, filterText }) {
+  // Only re-filters when data or filterText changes
+  const filtered = useMemo(
+    () =&gt; data.filter(row =&gt; row.name.includes(filterText)),
+    [data, filterText]
+  );
+
+  return &lt;table&gt;{filtered.map(row =&gt; &lt;Row key={row.id} row={row} /&gt;)}&lt;/table&gt;;
+}
+
+// useCallback — caches a FUNCTION reference
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  // Without useCallback, new function ref on every render → Child re-renders
+  const handleClick = useCallback(() =&gt; {
+    console.log('clicked');
+  }, []);  // stable reference — no deps
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; setCount(c =&gt; c + 1)}&gt;+&lt;/button&gt;
+      &lt;MemoizedChild onClick={handleClick} /&gt;  {/* won't re-render */}
+    &lt;/&gt;
+  );
+}
+
+// memo — skips re-render if props haven't changed
+const MemoizedChild = memo(function Child({ onClick }) {
+  console.log('Child rendered');
+  return &lt;button onClick={onClick}&gt;Click me&lt;/button&gt;;
+});
+</code></pre>
+
+<div class="callout info">
+  <strong>When to use</strong>
+  <ul>
+    <li><code>useMemo</code> — expensive computations (sorting/filtering large lists, complex calculations)</li>
+    <li><code>useCallback</code> — when passing callbacks to <code>memo</code>-wrapped children</li>
+    <li>Don't add either by default — they add overhead; profile first</li>
+  </ul>
+</div>
+
+<!-- ═══ CUSTOM HOOKS ═══ -->
+<h2 id="custom-hooks">Custom Hooks</h2>
+
+<p>Custom hooks are plain functions that start with <code>use</code> and call other hooks. They let you extract and reuse stateful logic between components.</p>
+
+<pre><code class="language-jsx">// useLocalStorage — persist state in localStorage
+function useLocalStorage(key, initialValue) {
+  const [value, setValue] = useState(() =&gt; {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : initialValue;
+    } catch { return initialValue; }
+  });
+
+  const set = useCallback((val) =&gt; {
+    const toStore = typeof val === 'function' ? val(value) : val;
+    setValue(toStore);
+    localStorage.setItem(key, JSON.stringify(toStore));
+  }, [key, value]);
+
+  return [value, set];
+}
+
+// useDebounce — delay a value update
+function useDebounce(value, delay = 300) {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; setDebounced(value), delay);
+    return () =&gt; clearTimeout(timer);
+  }, [value, delay]);
+
+  return debounced;
+}
+
+// useFetch — simple data fetching
+function useFetch(url) {
+  const [data, setData]     = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]   = useState(null);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    fetch(url)
+      .then(r =&gt; r.json())
+      .then(d =&gt; { if (!cancelled) { setData(d); setLoading(false); } })
+      .catch(e =&gt; { if (!cancelled) { setError(e); setLoading(false); } });
+    return () =&gt; { cancelled = true; };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// ── Usage ──
+function SearchBox() {
+  const [query, setQuery] = useLocalStorage('search', '');
+  const debouncedQuery    = useDebounce(query, 400);
+  const { data, loading } = useFetch(`/api/search?q=${debouncedQuery}`);
+
+  return (
+    &lt;&gt;
+      &lt;input value={query} onChange={e =&gt; setQuery(e.target.value)} /&gt;
+      {loading ? &lt;Spinner /&gt; : &lt;Results data={data} /&gt;}
+    &lt;/&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ RENDERING ═══ -->
+<h2 id="rendering">Conditional Rendering</h2>
+
+<pre><code class="language-jsx">function Alert({ type, message, onClose }) {
+  // 1. Return early (guard clause)
+  if (!message) return null;
+
+  // 2. Ternary for either/or
+  const icon = type === 'error' ? '❌' : '✅';
+
+  return (
+    &lt;div className={`alert alert-${type}`}&gt;
+      {/* 3. Short-circuit for optional element */}
+      {onClose &amp;&amp; &lt;button onClick={onClose}&gt;✕&lt;/button&gt;}
+
+      {/* 4. IIFE for complex logic inline */}
+      {(() =&gt; {
+        if (type === 'error') return &lt;strong&gt;Error: &lt;/strong&gt;;
+        if (type === 'warn')  return &lt;strong&gt;Warning: &lt;/strong&gt;;
+        return null;
+      })()}
+
+      {icon} {message}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+
+<div class="callout warn">
+  <strong>0 is Falsy in JSX!</strong>
+  <p><code>{count &amp;&amp; &lt;Badge /&gt;}</code> renders <strong>0</strong> when count is 0, not nothing. Use <code>{count &gt; 0 &amp;&amp; &lt;Badge /&gt;}</code> or <code>{!!count &amp;&amp; &lt;Badge /&gt;}</code> to be safe.</p>
+</div>
+
+<!-- ═══ LISTS ═══ -->
+<h2 id="lists">Lists &amp; Keys</h2>
+
+<p>Keys help React identify which items changed, were added, or removed. They must be <strong>unique among siblings</strong> and <strong>stable</strong> (don't use array index if the list can reorder).</p>
+
+<pre><code class="language-jsx">function TodoList({ todos }) {
+  return (
+    &lt;ul&gt;
+      {todos.map(todo =&gt; (
+        &lt;TodoItem
+          key={todo.id}      {/* ← unique, stable ID */}
+          todo={todo}
+        /&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+// ❌ Index as key — breaks when items reorder or are inserted
+{items.map((item, index) =&gt; &lt;Item key={index} /&gt;)}
+
+// ✅ Use a stable, unique ID from your data
+{items.map(item =&gt; &lt;Item key={item.id} /&gt;)}
+</code></pre>
+
+<!-- ═══ EVENTS ═══ -->
+<h2 id="events">Event Handling</h2>
+
+<pre><code class="language-jsx">function EventExamples() {
+  // Handlers defined inline or as named functions
+  const handleClick = (e) =&gt; {
+    e.preventDefault();      // prevent default browser behavior
+    e.stopPropagation();     // stop event bubbling
+    console.log(e.target);   // the actual DOM element
+  };
+
+  return (
+    &lt;div onClick={() =&gt; console.log('parent')}&gt;
+      {/* Mouse events */}
+      &lt;button
+        onClick={handleClick}
+        onMouseEnter={() =&gt; console.log('hover')}
+        onDoubleClick={() =&gt; console.log('double')}&gt;
+        Click me
+      &lt;/button&gt;
+
+      {/* Keyboard events */}
+      &lt;input
+        onKeyDown={e =&gt; e.key === 'Enter' &amp;&amp; submit()}
+        onKeyUp={e =&gt; console.log(e.key)}
+      /&gt;
+
+      {/* Focus events */}
+      &lt;input onFocus={() =&gt; setActive(true)} onBlur={() =&gt; setActive(false)} /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ FORMS ═══ -->
+<h2 id="forms">Forms</h2>
+
+<h3>Controlled Components (recommended)</h3>
+
+<p>React controls the input value via state. The input is always in sync with state.</p>
+
+<pre><code class="language-jsx">function LoginForm() {
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) =&gt; {
+    const { name, value } = e.target;
+    setForm(prev =&gt; ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) =&gt; {
+    e.preventDefault();
+    // validate
+    const newErrors = {};
+    if (!form.email.includes('@')) newErrors.email = 'Invalid email';
+    if (form.password.length &lt; 8)  newErrors.password = 'Min 8 chars';
+    if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
+
+    await login(form);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;div&gt;
+        &lt;input
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          type="email"
+        /&gt;
+        {errors.email &amp;&amp; &lt;span&gt;{errors.email}&lt;/span&gt;}
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;input
+          name="password"
+          value={form.password}
+          onChange={handleChange}
+          type="password"
+        /&gt;
+        {errors.password &amp;&amp; &lt;span&gt;{errors.password}&lt;/span&gt;}
+      &lt;/div&gt;
+      &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+
+<h3>Uncontrolled with useRef</h3>
+
+<pre><code class="language-jsx">function UncontrolledForm() {
+  const nameRef  = useRef();
+  const emailRef = useRef();
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    console.log(nameRef.current.value, emailRef.current.value);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={nameRef}  defaultValue="Alice" /&gt;
+      &lt;input ref={emailRef} type="email" /&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ LIFTING STATE ═══ -->
+<h2 id="lifting">Lifting State Up</h2>
+
+<p>When two sibling components need to share state, <strong>lift state up</strong> to their closest common ancestor and pass it down via props.</p>
+
+<pre><code class="language-jsx">// ── Before: each has its own state, they can't sync ──
+function TempCelsius()    { const [val, setVal] = useState(0); ... }
+function TempFahrenheit() { const [val, setVal] = useState(32); ... }
+
+// ── After: state lifted to parent ──
+function TemperatureConverter() {
+  const [celsius, setCelsius] = useState(0);
+
+  const fahrenheit = celsius * 9/5 + 32;
+  const handleCelsiusChange    = (c) =&gt; setCelsius(c);
+  const handleFahrenheitChange = (f) =&gt; setCelsius((f - 32) * 5/9);
+
+  return (
+    &lt;&gt;
+      &lt;TempInput
+        label="Celsius"
+        value={celsius}
+        onChange={handleCelsiusChange}
+      /&gt;
+      &lt;TempInput
+        label="Fahrenheit"
+        value={fahrenheit}
+        onChange={handleFahrenheitChange}
+      /&gt;
+    &lt;/&gt;
+  );
+}
+
+function TempInput({ label, value, onChange }) {
+  return (
+    &lt;label&gt;
+      {label}: &lt;input
+        type="number"
+        value={value}
+        onChange={e =&gt; onChange(Number(e.target.value))}
+      /&gt;
+    &lt;/label&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ COMPOSITION ═══ -->
+<h2 id="composition">Composition Patterns</h2>
+
+<h3>children prop (slot pattern)</h3>
+
+<pre><code class="language-jsx">// Generic container that renders whatever is passed between tags
+function Card({ title, children, footer }) {
+  return (
+    &lt;div className="card"&gt;
+      &lt;div className="card-header"&gt;&lt;h3&gt;{title}&lt;/h3&gt;&lt;/div&gt;
+      &lt;div className="card-body"&gt;{children}&lt;/div&gt;
+      {footer &amp;&amp; &lt;div className="card-footer"&gt;{footer}&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+}
+
+// Usage
+&lt;Card title="Profile" footer={&lt;Button&gt;Save&lt;/Button&gt;}&gt;
+  &lt;Avatar src="/alice.png" /&gt;
+  &lt;p&gt;Software Engineer&lt;/p&gt;
+&lt;/Card&gt;
+</code></pre>
+
+<h3>Render Props</h3>
+
+<pre><code class="language-jsx">// Component passes data back to parent through a render function prop
+function MouseTracker({ render }) {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const handleMove = e =&gt; setPos({ x: e.clientX, y: e.clientY });
+
+  return &lt;div onMouseMove={handleMove}&gt;{render(pos)}&lt;/div&gt;;
+}
+
+// Usage — parent decides how to render the data
+&lt;MouseTracker render={({ x, y }) =&gt; (
+  &lt;p&gt;Mouse: {x}, {y}&lt;/p&gt;
+)} /&gt;
+</code></pre>
+
+<h3>Compound Components</h3>
+
+<pre><code class="language-jsx">// Parent + child components share implicit state via context
+const TabsContext = createContext();
+
+function Tabs({ children, defaultTab }) {
+  const [active, setActive] = useState(defaultTab);
+  return (
+    &lt;TabsContext.Provider value={{ active, setActive }}&gt;
+      &lt;div className="tabs"&gt;{children}&lt;/div&gt;
+    &lt;/TabsContext.Provider&gt;
+  );
+}
+
+Tabs.List = function TabList({ children }) {
+  return &lt;div className="tab-list"&gt;{children}&lt;/div&gt;;
+};
+
+Tabs.Tab = function Tab({ id, children }) {
+  const { active, setActive } = useContext(TabsContext);
+  return (
+    &lt;button
+      className={active === id ? 'active' : ''}
+      onClick={() =&gt; setActive(id)}&gt;
+      {children}
+    &lt;/button&gt;
+  );
+};
+
+Tabs.Panel = function Panel({ id, children }) {
+  const { active } = useContext(TabsContext);
+  return active === id ? &lt;div&gt;{children}&lt;/div&gt; : null;
+};
+
+// Usage — clean, semantic, no prop drilling
+&lt;Tabs defaultTab="home"&gt;
+  &lt;Tabs.List&gt;
+    &lt;Tabs.Tab id="home"&gt;Home&lt;/Tabs.Tab&gt;
+    &lt;Tabs.Tab id="about"&gt;About&lt;/Tabs.Tab&gt;
+  &lt;/Tabs.List&gt;
+  &lt;Tabs.Panel id="home"&gt;&lt;HomePage /&gt;&lt;/Tabs.Panel&gt;
+  &lt;Tabs.Panel id="about"&gt;&lt;AboutPage /&gt;&lt;/Tabs.Panel&gt;
+&lt;/Tabs&gt;
+</code></pre>
+
+<!-- ═══ CONTEXT PATTERN ═══ -->
+<h2 id="context-pattern">Context API Pattern</h2>
+
+<p>The recommended pattern: encapsulate context creation, provider, and hook in one module.</p>
+
+<pre><code class="language-jsx">// auth-context.jsx
+import { createContext, useContext, useState } from 'react';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  const login  = async (creds) =&gt; { const u = await api.login(creds); setUser(u); };
+  const logout = ()            =&gt; { api.logout(); setUser(null); };
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+// Custom hook — throws if used outside provider (catches mistakes early)
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used inside &lt;AuthProvider&gt;');
+  return ctx;
+}
+
+// app.jsx — wrap at the top
+function App() {
+  return (
+    &lt;AuthProvider&gt;
+      &lt;Router&gt;
+        &lt;Routes /&gt;
+      &lt;/Router&gt;
+    &lt;/AuthProvider&gt;
+  );
+}
+
+// Anywhere in the tree
+function Header() {
+  const { user, logout } = useAuth();
+  return user ? &lt;button onClick={logout}&gt;Logout {user.name}&lt;/button&gt; : &lt;Login /&gt;;
+}
+</code></pre>
+
+<!-- ═══ PERFORMANCE ═══ -->
+<h2 id="performance">Performance</h2>
+
+<h3>React.memo</h3>
+
+<pre><code class="language-jsx">// Skips re-render if props haven't changed (shallow equality)
+const ExpensiveList = memo(function ExpensiveList({ items, onDelete }) {
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id}&gt;
+          {item.name}
+          &lt;button onClick={() =&gt; onDelete(item.id)}&gt;Delete&lt;/button&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+});
+
+// Custom comparison function (for deep equality or selective check)
+const Item = memo(
+  ({ data }) =&gt; &lt;div&gt;{data.name}&lt;/div&gt;,
+  (prev, next) =&gt; prev.data.id === next.data.id  // true = skip re-render
+);
+</code></pre>
+
+<h3>Code Splitting &amp; Lazy Loading</h3>
+
+<pre><code class="language-jsx">import { lazy, Suspense } from 'react';
+
+// Lazy-load heavy components — they load only when rendered
+const Dashboard = lazy(() =&gt; import('./Dashboard'));
+const Reports   = lazy(() =&gt; import('./Reports'));
+
+function App() {
+  return (
+    &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/dashboard" element={&lt;Dashboard /&gt;} /&gt;
+        &lt;Route path="/reports"   element={&lt;Reports /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/Suspense&gt;
+  );
+}
+</code></pre>
+
+<h3>Performance Checklist</h3>
+
+<table>
+  <tr><th>Issue</th><th>Fix</th></tr>
+  <tr><td>Expensive computation every render</td><td><code>useMemo</code></td></tr>
+  <tr><td>Child re-renders when parent re-renders</td><td><code>React.memo</code> + <code>useCallback</code></td></tr>
+  <tr><td>Large bundle / slow initial load</td><td><code>lazy()</code> + <code>Suspense</code></td></tr>
+  <tr><td>Long list rendering slowly</td><td>Virtualization: <code>react-window</code></td></tr>
+  <tr><td>Unnecessary context re-renders</td><td>Split contexts, or use <code>useMemo</code> on value</td></tr>
+  <tr><td>Identify what's slow</td><td>React DevTools Profiler</td></tr>
+</table>
+
+<!-- ═══ ERROR BOUNDARY ═══ -->
+<h2 id="error-boundary">Error Boundaries</h2>
+
+<p>Error Boundaries catch JavaScript errors in their child component tree and display a fallback UI. They must be <strong>class components</strong> (no hook equivalent yet).</p>
+
+<pre><code class="language-jsx">import { Component } from 'react';
+
+class ErrorBoundary extends Component {
+  state = { hasError: false, error: null };
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    // Log to error tracking service
+    logErrorToService(error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || &lt;h2&gt;Something went wrong.&lt;/h2&gt;;
+    }
+    return this.props.children;
+  }
+}
+
+// Usage — wrap risky subtrees
+&lt;ErrorBoundary fallback={&lt;p&gt;Chart unavailable&lt;/p&gt;}&gt;
+  &lt;ComplexChart data={bigData} /&gt;
+&lt;/ErrorBoundary&gt;
+</code></pre>
+
+<!-- ═══ SUSPENSE ═══ -->
+<h2 id="suspense">Suspense &amp; Lazy</h2>
+
+<p><code>Suspense</code> lets components "wait" for something before rendering and show a fallback meanwhile. Combined with <code>lazy()</code> for code splitting, or data libraries (TanStack Query, Relay) for data.</p>
+
+<pre><code class="language-jsx">// Suspense + lazy (code splitting)
+const HeavyMap = lazy(() =&gt; import('./HeavyMap'));
+
+function Page() {
+  return (
+    &lt;Suspense fallback={&lt;MapSkeleton /&gt;}&gt;
+      &lt;HeavyMap /&gt;
+    &lt;/Suspense&gt;
+  );
+}
+
+// Multiple concurrent data fetches with React 18 + TanStack Query
+function Dashboard() {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;ErrorBoundary fallback={&lt;Error /&gt;}&gt;
+        &lt;UserStats /&gt;    {/* these fetch in parallel */}
+        &lt;RecentOrders /&gt;
+      &lt;/ErrorBoundary&gt;
+    &lt;/Suspense&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ PORTALS & REFS ═══ -->
+<h2 id="portals">Portals &amp; forwardRef</h2>
+
+<h3>Portals</h3>
+
+<p>Portals render children into a DOM node outside the parent component's DOM hierarchy — perfect for modals, tooltips, and toasts.</p>
+
+<pre><code class="language-jsx">import { createPortal } from 'react-dom';
+
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
+
+  // Renders into document.body, not inside the component's DOM parent
+  return createPortal(
+    &lt;div className="modal-overlay" onClick={onClose}&gt;
+      &lt;div className="modal" onClick={e =&gt; e.stopPropagation()}&gt;
+        {children}
+        &lt;button onClick={onClose}&gt;Close&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;,
+    document.body
+  );
+}
+</code></pre>
+
+<h3>forwardRef</h3>
+
+<p>Allows a parent to access a ref of a DOM element inside a child component.</p>
+
+<pre><code class="language-jsx">import { forwardRef } from 'react';
+
+// Child exposes its internal input ref
+const FancyInput = forwardRef(function FancyInput(props, ref) {
+  return &lt;input ref={ref} className="fancy" {...props} /&gt;;
+});
+
+// Parent can now focus the input inside FancyInput
+function Form() {
+  const inputRef = useRef();
+
+  return (
+    &lt;&gt;
+      &lt;FancyInput ref={inputRef} placeholder="Name" /&gt;
+      &lt;button onClick={() =&gt; inputRef.current.focus()}&gt;Focus&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ ROUTER ═══ -->
+<h2 id="router">React Router v6</h2>
+
+<pre><code class="language-jsx">import {
+  BrowserRouter, Routes, Route, Link, NavLink,
+  useNavigate, useParams, useSearchParams, Outlet
+} from 'react-router-dom';
+
+// ── Setup ──
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Nav /&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/"           element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about"      element={&lt;About /&gt;} /&gt;
+
+        {/* Nested routes */}
+        &lt;Route path="/users" element={&lt;UsersLayout /&gt;}&gt;
+          &lt;Route index         element={&lt;UserList /&gt;} /&gt;
+          &lt;Route path=":id"    element={&lt;UserDetail /&gt;} /&gt;
+          &lt;Route path=":id/edit" element={&lt;UserEdit /&gt;} /&gt;
+        &lt;/Route&gt;
+
+        &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+// ── Navigation ──
+function Nav() {
+  return (
+    &lt;nav&gt;
+      &lt;NavLink to="/"      className={({ isActive }) =&gt; isActive ? 'active' : ''}&gt;Home&lt;/NavLink&gt;
+      &lt;NavLink to="/users"&gt;Users&lt;/NavLink&gt;
+    &lt;/nav&gt;
+  );
+}
+
+// ── Nested layout with Outlet ──
+function UsersLayout() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Users Section&lt;/h1&gt;
+      &lt;Outlet /&gt;  {/* child routes render here */}
+    &lt;/div&gt;
+  );
+}
+
+// ── Reading URL params ──
+function UserDetail() {
+  const { id } = useParams();  // /users/42 → id = '42'
+  const [params] = useSearchParams();  // /users?tab=posts → params.get('tab')
+  const navigate  = useNavigate();
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;User {id}&lt;/p&gt;
+      &lt;button onClick={() =&gt; navigate(-1)}&gt;Back&lt;/button&gt;
+      &lt;button onClick={() =&gt; navigate('/users')}&gt;All Users&lt;/button&gt;
+    &lt;/&gt;
+  );
+}
+</code></pre>
+
+<!-- ═══ STATE MGMT ═══ -->
+<h2 id="state-mgmt">State Management</h2>
+
+<table>
+  <tr>
+    <th>Solution</th>
+    <th>Best For</th>
+    <th>Complexity</th>
+  </tr>
+  <tr>
+    <td><code>useState</code> / <code>useReducer</code></td>
+    <td>Local / single-component state</td>
+    <td>None — built-in</td>
+  </tr>
+  <tr>
+    <td>Context API</td>
+    <td>Low-frequency global state (theme, auth, locale)</td>
+    <td>Low — standard React</td>
+  </tr>
+  <tr>
+    <td><strong>Zustand</strong></td>
+    <td>Medium apps, simple global store</td>
+    <td>Very low — minimal boilerplate</td>
+  </tr>
+  <tr>
+    <td><strong>Redux Toolkit</strong></td>
+    <td>Large apps, complex state logic, DevTools need</td>
+    <td>Medium — slices, actions, selectors</td>
+  </tr>
+  <tr>
+    <td><strong>Jotai / Recoil</strong></td>
+    <td>Atomic state, fine-grained reactivity</td>
+    <td>Low — atom-based</td>
+  </tr>
+  <tr>
+    <td><strong>TanStack Query</strong></td>
+    <td>Server state (fetching, caching, sync)</td>
+    <td>Low — replaces most useEffect fetching</td>
+  </tr>
+</table>
+
+<h3>Zustand — minimal example</h3>
+
+<pre><code class="language-jsx">import { create } from 'zustand';
+
+const useStore = create((set) =&gt; ({
+  count: 0,
+  user: null,
+  increment: () =&gt; set(state =&gt; ({ count: state.count + 1 })),
+  setUser:   (user) =&gt; set({ user }),
+  reset:     () =&gt; set({ count: 0 }),
+}));
+
+// Use it anywhere — no Provider needed
+function Counter() {
+  const { count, increment } = useStore();
+  return &lt;button onClick={increment}&gt;{count}&lt;/button&gt;;
+}
+</code></pre>
+
+<h3>Redux Toolkit — slice pattern</h3>
+
+<pre><code class="language-jsx">import { createSlice, configureStore } from '@reduxjs/toolkit';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+
+// Slice = reducer + actions in one
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: state =&gt; { state.value += 1; },  // Immer under the hood — mutation OK here
+    decrement: state =&gt; { state.value -= 1; },
+    setAmount: (state, action) =&gt; { state.value = action.payload; },
+  },
+});
+
+export const { increment, decrement, setAmount } = counterSlice.actions;
+
+const store = configureStore({ reducer: { counter: counterSlice.reducer } });
+
+// Wrap app
+&lt;Provider store={store}&gt;&lt;App /&gt;&lt;/Provider&gt;
+
+// In component
+function Counter() {
+  const count    = useSelector(state =&gt; state.counter.value);
+  const dispatch = useDispatch();
+  return &lt;button onClick={() =&gt; dispatch(increment())}&gt;{count}&lt;/button&gt;;
+}
+</code></pre>
+
+<!-- ═══ RULES ═══ -->
+<h2 id="rules">Rules &amp; Best Practices</h2>
+
+<h3>Rules of Hooks</h3>
+
+<div class="callout danger">
+  <strong>These rules are enforced by the eslint-plugin-react-hooks linter</strong>
+  <ul>
+    <li>Only call hooks at the <strong>top level</strong> of a component or custom hook — never inside loops, conditions, or nested functions</li>
+    <li>Only call hooks from <strong>React function components</strong> or custom hooks — not from regular JS functions</li>
+  </ul>
+</div>
+
+<div class="compare">
+  <div>
+    <span class="label label-bad">Wrong</span>
+    <pre style="margin-top:8px"><code class="language-jsx">function Bad({ flag }) {
+  if (flag) {
+    // ❌ conditional hook
+    const [x] = useState(0);
+  }
+  for (let i = 0; i &lt; 3; i++) {
+    // ❌ hook in loop
+    useEffect(() =&gt; {}, []);
+  }
+}</code></pre>
+  </div>
+  <div>
+    <span class="label label-good">Correct</span>
+    <pre style="margin-top:8px"><code class="language-jsx">function Good({ flag }) {
+  // ✅ always at top level
+  const [x] = useState(0);
+
+  useEffect(() =&gt; {
+    // put conditional inside
+    if (flag) doSomething();
+  }, [flag]);
+}</code></pre>
+  </div>
+</div>
+
+<h3>Key Principles</h3>
+
+<table>
+  <tr><th>Principle</th><th>Why it matters</th></tr>
+  <tr><td>Keep components small and focused</td><td>Easier to test, reuse, and reason about</td></tr>
+  <tr><td>Derive state, don't duplicate it</td><td>Avoids sync bugs — compute from existing state instead of storing redundant state</td></tr>
+  <tr><td>State as low as possible</td><td>Minimizes re-render scope; only lift when truly needed by siblings</td></tr>
+  <tr><td>Effects are for synchronization</td><td>useEffect syncs React state with external systems — not for data transformations</td></tr>
+  <tr><td>Avoid deeply nested state</td><td>Use flat structures; normalization makes updates simpler</td></tr>
+  <tr><td>Co-locate state with consumers</td><td>Put state in the component that uses it, not always at the top</td></tr>
+</table>
+
+<h3>Common Anti-Patterns</h3>
+
+<pre><code class="language-jsx">// ❌ Mirroring props in state (derived state antipattern)
+function UserName({ name }) {
+  const [localName, setLocalName] = useState(name);  // won't update if 'name' prop changes!
+  return &lt;span&gt;{localName}&lt;/span&gt;;
+}
+// ✅ Just use the prop directly, or if you need it editable: use a key to reset
+&lt;UserName key={userId} name={user.name} /&gt;
+
+// ❌ Infinite loop — effect updates a value it also depends on
+useEffect(() =&gt; {
+  setCount(count + 1);  // count in deps → infinite loop!
+}, [count]);
+
+// ✅ Use functional update — no dependency on count needed
+useEffect(() =&gt; {
+  setCount(prev =&gt; prev + 1);
+}, []);  // runs once
+
+// ❌ Creating objects/arrays in render as prop values (breaks memo)
+&lt;Child config={{ color: 'red' }} /&gt;  // new object every render!
+// ✅ Define outside or memoize
+const config = useMemo(() =&gt; ({ color: 'red' }), []);
+&lt;Child config={config} /&gt;
+</code></pre>
+
+<h3>All Core Hooks at a Glance</h3>
+
+<div class="hook-grid">
+  <div class="hook-card">
+    <div class="hook-name">useState</div>
+    <p>Local component state. Returns [value, setter]. Setter triggers re-render.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useReducer</div>
+    <p>Complex state with multiple sub-values or next state depends on previous. Pairs with dispatch.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useEffect</div>
+    <p>Side effects: fetch, timers, subscriptions. Runs after render. Return cleanup function.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useLayoutEffect</div>
+    <p>Like useEffect but fires synchronously after DOM mutations. Use for measuring layout.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useRef</div>
+    <p>Mutable container (.current) that persists without re-rendering. DOM access or instance vars.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useContext</div>
+    <p>Read context value from nearest Provider above. Component re-renders on context change.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useMemo</div>
+    <p>Cache expensive computed value. Re-computes only when deps change.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useCallback</div>
+    <p>Cache function reference. Prevents re-creating callbacks on every render.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useId</div>
+    <p>Generate stable unique IDs for accessibility (aria-labelledby etc). React 18+.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useTransition</div>
+    <p>Mark state update as non-urgent. UI stays responsive during expensive re-renders. React 18+.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useDeferredValue</div>
+    <p>Defer re-rendering a less important part of the UI. Like debounce but integrated with React. React 18+.</p>
+  </div>
+  <div class="hook-card">
+    <div class="hook-name">useImperativeHandle</div>
+    <p>Customize the ref value exposed to parent when using forwardRef. Use sparingly.</p>
+  </div>
+</div>
+
+<footer>
+  <p>⚛ React.js Complete Guide &nbsp;·&nbsp; Built for learning &nbsp;·&nbsp; React 18 / 19</p>
+  <p style="margin-top:6px;font-size:12px;">Covers: JSX · Components · Hooks · Context · Performance · Routing · State Management</p>
+</footer>
+
+</main>
+
+<script>
+  // ── Syntax highlight all code blocks ──
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block);
+    });
+  });
+
+  // ── Active nav link on scroll ──
+  const sections = document.querySelectorAll('h2[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  function updateActive() {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  // ── Progress bar ──
+  const bar = document.getElementById('progress-bar');
+  function updateProgress() {
+    const total = document.body.scrollHeight - window.innerHeight;
+    const pct   = total > 0 ? window.scrollY / total : 0;
+    bar.style.transform = `scaleX(${pct})`;
+  }
+
+  window.addEventListener('scroll', () => {
+    updateActive();
+    updateProgress();
+  }, { passive: true });
+
+  updateActive();
+  updateProgress();
+</script>
+</body>
+</html>
