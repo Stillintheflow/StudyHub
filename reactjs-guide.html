@@ -47,6 +47,7 @@
     position: fixed;
     top: 0; left: 0;
     overflow-y: auto;
+    transition: transform .25s ease;
   }
   nav .logo {
     padding: 0 20px 20px;
@@ -100,13 +101,23 @@
     background: rgba(97,218,251,.06);
   }
   nav .section-label {
-    padding: 16px 20px 4px;
+    padding: 16px 16px 4px 20px;
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .08em;
     color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
   }
+  nav .section-label:hover { color: var(--text); }
+  .collapse-icon { font-size: 11px; transition: transform .2s; flex-shrink: 0; }
+  .section-label.collapsed .collapse-icon { transform: rotate(-90deg); }
+  .nav-group { overflow: hidden; max-height: 600px; opacity: 1; transition: max-height .3s ease, opacity .2s; }
+  .nav-group.collapsed { max-height: 0; opacity: 0; }
   nav::-webkit-scrollbar { width: 4px; }
   nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
@@ -119,7 +130,7 @@
     transform-origin: left;
     transform: scaleX(0);
     z-index: 100;
-    transition: transform .1s;
+    transition: transform .1s, left .25s ease;
   }
 
   /* ── MAIN ── */
@@ -128,6 +139,7 @@
     padding: 56px 64px;
     max-width: 980px;
     width: 100%;
+    transition: margin-left .25s ease;
   }
 
   /* ── HEADINGS ── */
@@ -412,63 +424,120 @@
   }
   #home-fab:hover { background: var(--surface2); }
 
+  /* ── SIDEBAR HIDDEN STATE ── */
+  body.sidebar-hidden nav { transform: translateX(-268px); }
+  body.sidebar-hidden main { margin-left: 0; }
+  body.sidebar-hidden #progress-bar { left: 0; }
+  #sidebar-open-btn {
+    position: fixed;
+    top: 14px; left: 14px;
+    z-index: 200;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 34px; height: 34px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 16px;
+    transition: all .15s;
+  }
+  #sidebar-open-btn:hover { background: var(--surface2); color: var(--text); }
+  body.sidebar-hidden #sidebar-open-btn { display: flex; }
+  .logo-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .nav-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 15px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    line-height: 1;
+    transition: all .15s;
+    margin-top: 2px;
+  }
+  .nav-close-btn:hover { background: rgba(255,255,255,.06); color: var(--text); }
+
   @media (max-width: 900px) {
     nav { display: none; }
     main { margin-left: 0; padding: 32px 24px; }
     .hook-grid, .compare { grid-template-columns: 1fr; }
     #progress-bar { left: 0; }
     #home-fab { display: flex; }
+    #sidebar-open-btn { display: none !important; }
   }
 </style>
 </head>
 <body>
 
 <div id="progress-bar"></div>
+<button id="sidebar-open-btn" title="Show sidebar">☰</button>
 <a id="home-fab" href="index.html">← Study Hub</a>
 
 <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
 <nav id="sidebar">
   <div class="logo">
-    <h1>⚛ React.js Guide</h1>
-    <p>Complete Knowledge Reference</p>
-    <span class="version">React 18 / 19</span>
+    <div class="logo-header">
+      <div>
+        <h1>⚛ React.js Guide</h1>
+        <p>Complete Knowledge Reference</p>
+        <span class="version">React 18 / 19</span>
+      </div>
+      <button class="nav-close-btn" id="nav-close-btn" title="Hide sidebar">✕</button>
+    </div>
     <a class="home-btn" href="index.html">← Study Hub</a>
   </div>
 
-  <div class="section-label">Foundation</div>
-  <a href="#overview">Overview & Mental Model</a>
-  <a href="#jsx">JSX</a>
-  <a href="#components">Components & Props</a>
-  <a href="#state">State — useState</a>
+  <div class="section-label" data-group="foundation"><span>Foundation</span><span class="collapse-icon">▾</span></div>
+  <div class="nav-group" id="group-foundation">
+    <a href="#overview">Overview & Mental Model</a>
+    <a href="#jsx">JSX</a>
+    <a href="#components">Components & Props</a>
+    <a href="#state">State — useState</a>
+  </div>
 
-  <div class="section-label">Core Hooks</div>
-  <a href="#useeffect">useEffect</a>
-  <a href="#useref">useRef</a>
-  <a href="#usecontext">useContext</a>
-  <a href="#usememo">useMemo & useCallback</a>
-  <a href="#custom-hooks">Custom Hooks</a>
+  <div class="section-label" data-group="core-hooks"><span>Core Hooks</span><span class="collapse-icon">▾</span></div>
+  <div class="nav-group" id="group-core-hooks">
+    <a href="#useeffect">useEffect</a>
+    <a href="#useref">useRef</a>
+    <a href="#usecontext">useContext</a>
+    <a href="#usememo">useMemo & useCallback</a>
+    <a href="#custom-hooks">Custom Hooks</a>
+  </div>
 
-  <div class="section-label">Rendering</div>
-  <a href="#rendering">Conditional Rendering</a>
-  <a href="#lists">Lists & Keys</a>
-  <a href="#events">Event Handling</a>
-  <a href="#forms">Forms</a>
+  <div class="section-label" data-group="rendering"><span>Rendering</span><span class="collapse-icon">▾</span></div>
+  <div class="nav-group" id="group-rendering">
+    <a href="#rendering">Conditional Rendering</a>
+    <a href="#lists">Lists & Keys</a>
+    <a href="#events">Event Handling</a>
+    <a href="#forms">Forms</a>
+  </div>
 
-  <div class="section-label">Patterns</div>
-  <a href="#lifting">Lifting State Up</a>
-  <a href="#composition">Composition Patterns</a>
-  <a href="#context-pattern">Context API Pattern</a>
+  <div class="section-label" data-group="patterns"><span>Patterns</span><span class="collapse-icon">▾</span></div>
+  <div class="nav-group" id="group-patterns">
+    <a href="#lifting">Lifting State Up</a>
+    <a href="#composition">Composition Patterns</a>
+    <a href="#context-pattern">Context API Pattern</a>
+  </div>
 
-  <div class="section-label">Advanced</div>
-  <a href="#performance">Performance</a>
-  <a href="#error-boundary">Error Boundaries</a>
-  <a href="#suspense">Suspense & Lazy</a>
-  <a href="#portals">Portals & Refs</a>
+  <div class="section-label" data-group="advanced"><span>Advanced</span><span class="collapse-icon">▾</span></div>
+  <div class="nav-group" id="group-advanced">
+    <a href="#performance">Performance</a>
+    <a href="#error-boundary">Error Boundaries</a>
+    <a href="#suspense">Suspense & Lazy</a>
+    <a href="#portals">Portals & Refs</a>
+  </div>
 
-  <div class="section-label">Ecosystem</div>
-  <a href="#router">React Router v6</a>
-  <a href="#state-mgmt">State Management</a>
-  <a href="#rules">Rules & Best Practices</a>
+  <div class="section-label" data-group="ecosystem"><span>Ecosystem</span><span class="collapse-icon">▾</span></div>
+  <div class="nav-group" id="group-ecosystem">
+    <a href="#router">React Router v6</a>
+    <a href="#state-mgmt">State Management</a>
+    <a href="#tanstack-query">useQuery & useMutation</a>
+    <a href="#rules">Rules & Best Practices</a>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
@@ -1741,6 +1810,156 @@ function Counter() {
 }
 </code></pre>
 
+<!-- ═══ TANSTACK QUERY ═══ -->
+<h2 id="tanstack-query">useQuery &amp; useMutation <span class="badge badge-react">TanStack Query</span></h2>
+
+<p>TanStack Query (React Query) manages <strong>server state</strong>: fetching, caching, background sync, and mutations. It replaces most <code>useEffect</code>-based data fetching. Install: <code>npm install @tanstack/react-query</code>.</p>
+
+<h3>Setup</h3>
+
+<pre><code class="language-jsx">import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    &lt;QueryClientProvider client={queryClient}&gt;
+      &lt;YourApp /&gt;
+    &lt;/QueryClientProvider&gt;
+  );
+}
+</code></pre>
+
+<h3>useQuery — Reading Data</h3>
+
+<pre><code class="language-jsx">import { useQuery } from '@tanstack/react-query';
+
+function UserProfile({ userId }) {
+  const { data, isPending, isError, error, isFetching } = useQuery({
+    queryKey: ['user', userId],          // cache key — include all dependencies
+    queryFn:  () =&gt; fetchUser(userId),   // async fn that returns data
+    staleTime: 5 * 60 * 1000,           // 5 min — skip refetch if data is fresh
+  });
+
+  if (isPending) return &lt;Spinner /&gt;;
+  if (isError)   return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+  return &lt;div&gt;{data.name}&lt;/div&gt;;
+}
+</code></pre>
+
+<h4>Key useQuery Options</h4>
+
+<table>
+  <tr><th>Option</th><th>Default</th><th>Description</th></tr>
+  <tr><td><code>queryKey</code></td><td>—</td><td>Unique cache key. Use arrays: <code>['users', id]</code></td></tr>
+  <tr><td><code>queryFn</code></td><td>—</td><td>Async function that returns the data</td></tr>
+  <tr><td><code>staleTime</code></td><td>0</td><td>ms data stays fresh — 0 means always refetch on focus</td></tr>
+  <tr><td><code>gcTime</code></td><td>5 min</td><td>How long unused cache stays in memory</td></tr>
+  <tr><td><code>enabled</code></td><td>true</td><td><code>false</code> disables auto-fetching (e.g. <code>enabled: !!userId</code>)</td></tr>
+  <tr><td><code>refetchOnWindowFocus</code></td><td>true</td><td>Refetch when browser tab regains focus</td></tr>
+  <tr><td><code>retry</code></td><td>3</td><td>Number of retries on failure</td></tr>
+  <tr><td><code>select</code></td><td>—</td><td>Transform data before it reaches the component</td></tr>
+</table>
+
+<pre><code class="language-jsx">// Conditional — only fetch when userId exists
+const { data } = useQuery({
+  queryKey: ['user', userId],
+  queryFn:  () =&gt; fetchUser(userId),
+  enabled:  !!userId,
+});
+
+// select — component only receives the transformed value
+const { data: name } = useQuery({
+  queryKey: ['user', userId],
+  queryFn:  () =&gt; fetchUser(userId),
+  select:   (user) =&gt; user.name,
+});
+
+// Dependent queries — second waits for first
+const { data: user }  = useQuery({ queryKey: ['user'],  queryFn: fetchCurrentUser });
+const { data: posts } = useQuery({
+  queryKey: ['posts', user?.id],
+  queryFn:  () =&gt; fetchPosts(user.id),
+  enabled:  !!user?.id,
+});
+</code></pre>
+
+<h3>useMutation — Writing Data</h3>
+
+<pre><code class="language-jsx">import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+function AddTodoForm() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (newTodo) =&gt;
+      fetch('/api/todos', { method: 'POST', body: JSON.stringify(newTodo) })
+        .then(r =&gt; r.json()),
+
+    onSuccess: () =&gt; {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });  // refetch list
+    },
+    onError: (error) =&gt; {
+      console.error('Failed:', error.message);
+    },
+  });
+
+  return (
+    &lt;form onSubmit={e =&gt; { e.preventDefault(); mutation.mutate({ text: e.target.text.value }); }}&gt;
+      &lt;input name="text" /&gt;
+      &lt;button type="submit" disabled={mutation.isPending}&gt;
+        {mutation.isPending ? 'Adding…' : 'Add Todo'}
+      &lt;/button&gt;
+      {mutation.isError &amp;&amp; &lt;p className="error"&gt;{mutation.error.message}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+
+<h4>useMutation Callbacks</h4>
+
+<table>
+  <tr><th>Callback</th><th>Args</th><th>When it runs</th></tr>
+  <tr><td><code>onMutate</code></td><td><code>(variables)</code></td><td>Before <code>mutationFn</code> fires — use for optimistic updates</td></tr>
+  <tr><td><code>onSuccess</code></td><td><code>(data, variables, context)</code></td><td>Mutation succeeded</td></tr>
+  <tr><td><code>onError</code></td><td><code>(error, variables, context)</code></td><td>Mutation threw an error</td></tr>
+  <tr><td><code>onSettled</code></td><td><code>(data, error, variables)</code></td><td>Either way — like <code>finally</code></td></tr>
+</table>
+
+<h3>Optimistic Updates</h3>
+
+<pre><code class="language-jsx">const mutation = useMutation({
+  mutationFn: updateTodo,
+
+  onMutate: async (updatedTodo) =&gt; {
+    await queryClient.cancelQueries({ queryKey: ['todos'] });   // cancel in-flight fetches
+    const previous = queryClient.getQueryData(['todos']);        // snapshot
+
+    queryClient.setQueryData(['todos'], old =&gt;                  // update cache immediately
+      old.map(t =&gt; t.id === updatedTodo.id ? { ...t, ...updatedTodo } : t)
+    );
+
+    return { previous };                                        // context for rollback
+  },
+
+  onError: (_err, _vars, context) =&gt; {
+    queryClient.setQueryData(['todos'], context.previous);      // roll back
+  },
+
+  onSettled: () =&gt; {
+    queryClient.invalidateQueries({ queryKey: ['todos'] });     // sync with server
+  },
+});
+</code></pre>
+
+<div class="callout tip">
+  <strong>useQuery vs useMutation</strong>
+  <ul>
+    <li><strong>useQuery</strong> — reads data. Runs automatically, caches, background-syncs.</li>
+    <li><strong>useMutation</strong> — writes data (POST / PUT / DELETE). Triggered manually via <code>mutation.mutate(vars)</code>. No automatic caching — you control cache updates via <code>invalidateQueries</code> or <code>setQueryData</code>.</li>
+  </ul>
+</div>
+
 <!-- ═══ RULES ═══ -->
 <h2 id="rules">Rules &amp; Best Practices</h2>
 
@@ -1918,6 +2137,37 @@ const config = useMemo(() =&gt; ({ color: 'red' }), []);
 
   updateActive();
   updateProgress();
+
+  // ── Sidebar hide / show ──
+  document.getElementById('nav-close-btn').addEventListener('click', () => {
+    document.body.classList.add('sidebar-hidden');
+    localStorage.setItem('sidebar-hidden', '1');
+  });
+  document.getElementById('sidebar-open-btn').addEventListener('click', () => {
+    document.body.classList.remove('sidebar-hidden');
+    localStorage.setItem('sidebar-hidden', '0');
+  });
+  if (localStorage.getItem('sidebar-hidden') === '1') {
+    document.body.classList.add('sidebar-hidden');
+  }
+
+  // ── Collapsible nav groups ──
+  document.querySelectorAll('.section-label[data-group]').forEach(label => {
+    label.addEventListener('click', () => {
+      const group = document.getElementById('group-' + label.dataset.group);
+      const collapsed = group.classList.toggle('collapsed');
+      label.classList.toggle('collapsed', collapsed);
+      localStorage.setItem('nav-group-' + label.dataset.group, collapsed ? '1' : '0');
+    });
+  });
+  // Restore collapsed state
+  document.querySelectorAll('.section-label[data-group]').forEach(label => {
+    if (localStorage.getItem('nav-group-' + label.dataset.group) === '1') {
+      label.classList.add('collapsed');
+      const group = document.getElementById('group-' + label.dataset.group);
+      if (group) group.classList.add('collapsed');
+    }
+  });
 </script>
 </body>
 </html>
