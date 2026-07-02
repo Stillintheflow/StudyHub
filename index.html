@@ -194,15 +194,23 @@ kbd {
     <span class="card-tag">Frontend · React</span>
   </a>
 
+  <a class="card" href="finance-manager.html" style="--card-color: #34d399" tabindex="6" data-key="6">
+    <span class="card-key">6</span>
+    <div class="card-icon">💰</div>
+    <div class="card-title">Finance Manager</div>
+    <div class="card-desc">Quản lý tài chính cá nhân: ngân hàng, tiết kiệm, tiền mặt, chứng khoán. Theo dõi tổng tài sản và lịch sử thay đổi.</div>
+    <span class="card-tag">Tài chính</span>
+  </a>
+
 </div>
 
 <footer>
-  Nhấn <kbd>1</kbd>–<kbd>5</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
+  Nhấn <kbd>1</kbd>–<kbd>6</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
 </footer>
 
 <script>
 document.addEventListener('keydown', e => {
-  if (['1','2','3','4','5'].includes(e.key)) {
+  if (['1','2','3','4','5','6'].includes(e.key)) {
     const card = document.querySelector(`.card[data-key="${e.key}"]`);
     if (card) card.click();
   }
