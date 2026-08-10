@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Master — Từ vựng theo chủ đề</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23fb923c'/><text x='16' y='23' font-size='20' text-anchor='middle' font-family='serif'>🐙</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="englishmaster/style.css">
+</head>
+<body>
+
+<a class="hub-btn" href="index.html">← Study Hub</a>
+
+<!-- HOME SCREEN -->
+<div id="home" class="screen active">
+  <div class="logo">✦ IELTS Master</div>
+  <h1 class="hero">4070 từ vựng IELTS<br>theo 33 chủ đề</h1>
+  <p class="hero-sub">Spaced Repetition (SM-2) + học từ mới mỗi ngày theo giới hạn bạn chọn — vừa ôn lại từ cũ, vừa tiếp thu từ mới đều đặn.</p>
+
+  <div class="stats-row">
+    <div class="stat-pill"><span id="stat-total">0</span> tổng số từ</div>
+    <div class="stat-pill">Đã học: <span id="stat-learned">0</span></div>
+    <div class="stat-pill">Đã thuộc: <span id="stat-mastered">0</span></div>
+    <div class="stat-pill">🔥 Streak: <span id="stat-streak">0</span> ngày</div>
+  </div>
+
+  <div class="cta-card">
+    <div class="cta-counts">
+      <div class="review">
+        <span class="n" id="due-count">0</span>
+        <span class="lbl">Ôn tập</span>
+      </div>
+      <div class="new">
+        <span class="n" id="new-count">0</span>
+        <span class="lbl">Từ mới</span>
+      </div>
+    </div>
+    <div class="cta-empty" id="cta-empty" style="display:none"></div>
+    <button class="btn btn-primary" id="start-btn" onclick="startSession()" style="width:100%">🚀 Bắt đầu học</button>
+    <button class="btn btn-ghost" id="more-new-btn" onclick="studyMore()" style="width:100%; margin-top:10px; display:none">+ Học thêm 10 từ mới</button>
+  </div>
+
+  <div class="settings-row">
+    <div>
+      <div class="config-label">Từ mới / ngày</div>
+      <input type="number" id="new-per-day" min="1" max="200" value="20" onchange="onSettingsChange()">
+      <div class="config-label" style="margin-top:6px">Hôm nay: <span id="new-today-of-limit">0/20</span></div>
+    </div>
+    <div>
+      <div class="config-label">Hướng dịch</div>
+      <select id="direction" onchange="onSettingsChange()">
+        <option value="en-vi">Anh → Việt</option>
+        <option value="vi-en">Việt → Anh</option>
+        <option value="mix">Hỗn hợp</option>
+      </select>
+    </div>
+    <div>
+      <div class="config-label">Chủ đề (cho từ mới)</div>
+      <select id="topic-filter" onchange="onSettingsChange()"></select>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-ghost" onclick="openTopics()">📂 Xem 33 chủ đề</button>
+  </div>
+</div>
+
+<!-- TOPICS SCREEN -->
+<div id="topics" class="screen">
+  <div class="topics-header">
+    <button class="back-btn" onclick="goHome()">← Về</button>
+    <div class="topics-title">33 chủ đề IELTS</div>
+    <input type="text" id="topic-search" placeholder="Tìm chủ đề..." oninput="renderTopics(this.value)">
+  </div>
+  <div class="topics-grid" id="topics-grid"></div>
+</div>
+
+<!-- FLASHCARD SCREEN -->
+<div id="flash" class="screen">
+  <div class="session-header">
+    <button class="back-btn" onclick="goHome()">← Về</button>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="flash-progress" style="width:0%"></div></div>
+      <div class="progress-text" id="flash-counter">0 / 0</div>
+    </div>
+    <div class="streak-badge">🔥 <span id="flash-streak">0</span></div>
+  </div>
+
+  <div class="card-topic-pill" id="card-topic-pill"></div>
+
+  <div class="card-scene" onclick="flipCard()" id="card-scene">
+    <div class="card-3d" id="card-3d">
+      <div class="card-face card-front">
+        <span class="card-badge new" id="card-badge">🆕 Mới</span>
+        <div class="card-hint" id="card-hint-front">Nhấn để xem nghĩa</div>
+        <div class="card-term" id="card-term">ability</div>
+        <div class="card-pron" id="card-pron">/əˈbɪləti/</div>
+        <span class="card-number" id="card-num">1/20</span>
+        <button class="tts-btn" onclick="event.stopPropagation(); speakWord()" title="Nghe phát âm">🔊</button>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-hint">Nghĩa tiếng Việt</div>
+        <div class="card-def" id="card-def">khả năng, năng lực</div>
+        <div class="card-pron" id="card-pron-back" style="margin-top:12px"></div>
+        <span class="card-number" id="card-num-back">1/20</span>
+        <button class="tts-btn" onclick="event.stopPropagation(); speakWord()" title="Nghe phát âm">🔊</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rating-row" id="rating-row" style="display:none">
+    <button class="rating-btn again" onclick="rateCard(1)">😵 Quên<span class="label">Ôn lại ngay</span><span class="key">1</span></button>
+    <button class="rating-btn hard" onclick="rateCard(3)">😓 Khó<span class="label">Ôn sớm</span><span class="key">2</span></button>
+    <button class="rating-btn good" onclick="rateCard(4)">✅ Nhớ<span class="label">Đúng lịch</span><span class="key">3</span></button>
+    <button class="rating-btn easy" onclick="rateCard(5)">😎 Dễ<span class="label">Ôn muộn hơn</span><span class="key">4</span></button>
+  </div>
+  <div class="reveal-hint" id="reveal-hint">Nhấn thẻ hoặc phím Space để lật</div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="results" class="screen">
+  <div class="trophy" id="trophy-emoji">🏆</div>
+  <div class="result-title" id="result-title">Xuất sắc!</div>
+  <div class="result-sub" id="result-sub">Phiên học hoàn thành</div>
+
+  <div class="results-grid">
+    <div class="result-stat">
+      <div class="num" id="res-new" style="color:var(--green)">0</div>
+      <div class="lbl">Từ mới</div>
+    </div>
+    <div class="result-stat">
+      <div class="num" id="res-review" style="color:var(--blue)">0</div>
+      <div class="lbl">Ôn tập</div>
+    </div>
+    <div class="result-stat">
+      <div class="num" id="res-streak" style="color:var(--yellow)">0</div>
+      <div class="lbl">Streak cao</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goHome(); startSession()">🔁 Học tiếp</button>
+    <button class="btn btn-ghost" onclick="goHome()">🏠 Trang chủ</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="englishmaster/data.js"></script>
+<script src="englishmaster/app.js"></script>
+</body>
+</html>

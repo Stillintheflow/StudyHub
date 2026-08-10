@@ -232,6 +232,13 @@ h1.hero {
   .form-row { grid-template-columns: 1fr 1fr; }
 }
 
+.form-row-extra {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 input, select {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -305,6 +312,28 @@ button {
 .item-info { flex: 1; min-width: 0; }
 .item-name { font-weight: 600; font-size: 14.5px; }
 .item-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.item-edit-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.item-edit-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 8px;
+}
+.item-edit-extra {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+@media (max-width: 640px) {
+  .item-edit-row, .item-edit-extra { grid-template-columns: 1fr 1fr; }
+}
+.item-edit-form input, .item-edit-form select { font-size: 13px; padding: 9px 11px; }
 .item-amount {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
@@ -317,6 +346,23 @@ button {
   min-width: 110px;
 }
 .item-amount:hover, .item-amount:focus { border-color: var(--border); background: var(--surface2); outline: none; }
+.item-amount-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.item-maturity {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.item-maturity .arrow { margin: 0 4px; color: var(--muted); }
+.item-maturity b { color: var(--green); font-weight: 700; }
+.item-maturity.overdue { color: var(--gold); }
+.item-maturity.overdue b { color: var(--gold); }
 .item-actions { display: flex; gap: 6px; }
 .icon-btn {
   background: transparent;
@@ -413,6 +459,10 @@ footer.page-foot {
       <input type="number" id="inputAmount" placeholder="Số tiền (VNĐ)" step="1000">
       <button class="btn-primary" id="btnAdd">Thêm</button>
     </div>
+    <div class="form-row-extra" id="savingExtra" style="display:none;">
+      <input type="number" id="inputRate" placeholder="Lãi suất (%/năm)" step="0.1">
+      <input type="date" id="inputEndDate" title="Ngày đáo hạn">
+    </div>
   </div>
 
   <div class="toolbar" id="filterBar">
@@ -455,6 +505,7 @@ const TYPES = {
 let items = [];
 let log = [];
 let activeFilter = 'all';
+let editingId = null;
 
 function loadData() {
   try { items = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
@@ -479,6 +530,29 @@ function fmtMoney(n) {
 function fmtTime(ts) {
   const d = new Date(ts);
   return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+}
+
+function fmtDate(isoDate) {
+  return new Date(isoDate + 'T00:00:00').toLocaleDateString('vi-VN');
+}
+
+function isOverdue(isoDate) {
+  return new Date(isoDate + 'T00:00:00') < new Date(new Date().toDateString());
+}
+
+function savingDetails(it) {
+  const parts = [];
+  if (it.rate !== undefined && it.rate !== null && it.rate !== '') parts.push(`Lãi suất ${it.rate}%/năm`);
+  return parts.join(' · ');
+}
+
+function maturityValue(it) {
+  const rate = (it.rate !== undefined && it.rate !== null && it.rate !== '') ? it.rate : 0;
+  const end = new Date(it.endDate + 'T00:00:00');
+  const start = new Date(new Date().toDateString());
+  const days = Math.max((end - start) / 86400000, 0);
+  const years = days / 365;
+  return it.amount * (1 + (rate / 100) * years);
 }
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
@@ -577,17 +651,53 @@ function renderList() {
     for (const it of arr) {
       const row = document.createElement('div');
       row.className = 'item-row';
-      row.innerHTML = `
-        <div class="item-icon" style="background:${meta.color}22;color:${meta.color}">${meta.icon}</div>
-        <div class="item-info">
-          <div class="item-name">${escapeHtml(it.name)}</div>
-          <div class="item-note">Cập nhật ${fmtTime(it.updatedAt)}</div>
-        </div>
-        <div class="item-amount" contenteditable="true" data-id="${it.id}" spellcheck="false">${fmtMoney(it.amount)}</div>
-        <div class="item-actions">
-          <button class="icon-btn danger" data-action="delete" data-id="${it.id}" title="Xoá">🗑</button>
-        </div>
-      `;
+
+      if (it.id === editingId) {
+        const typeOptions = Object.entries(TYPES)
+          .map(([key, m]) => `<option value="${key}" ${key === it.type ? 'selected' : ''}>${m.icon} ${m.label}</option>`)
+          .join('');
+        row.innerHTML = `
+          <div class="item-icon" style="background:${meta.color}22;color:${meta.color}">${meta.icon}</div>
+          <div class="item-edit-form">
+            <div class="item-edit-row">
+              <input type="text" class="edit-name" value="${escapeAttr(it.name)}" placeholder="Tên">
+              <select class="edit-type">${typeOptions}</select>
+              <input type="number" class="edit-amount" value="${it.amount}" step="1000" placeholder="Số tiền">
+            </div>
+            <div class="item-edit-extra" style="display:${it.type === 'saving' ? 'grid' : 'none'}">
+              <input type="number" class="edit-rate" value="${it.rate ?? ''}" step="0.1" placeholder="Lãi suất (%/năm)">
+              <input type="date" class="edit-enddate" value="${it.endDate ?? ''}" title="Ngày đáo hạn">
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="icon-btn" data-action="save-edit" data-id="${it.id}" title="Lưu">✓</button>
+            <button class="icon-btn danger" data-action="cancel-edit" data-id="${it.id}" title="Huỷ">✕</button>
+          </div>
+        `;
+      } else {
+        const detail = it.type === 'saving' ? savingDetails(it) : '';
+        const hasEndDate = it.type === 'saving' && it.endDate;
+        const overdue = hasEndDate && isOverdue(it.endDate);
+        const maturityHtml = hasEndDate ? `
+          <div class="item-maturity${overdue ? ' overdue' : ''}">
+            ${overdue ? 'Đã đáo hạn' : 'Đáo hạn'} ${fmtDate(it.endDate)}<span class="arrow">→</span><b>${fmtMoney(maturityValue(it))}</b>
+          </div>` : '';
+        row.innerHTML = `
+          <div class="item-icon" style="background:${meta.color}22;color:${meta.color}">${meta.icon}</div>
+          <div class="item-info">
+            <div class="item-name">${escapeHtml(it.name)}</div>
+            <div class="item-note">${detail ? detail + ' · ' : ''}Cập nhật ${fmtTime(it.updatedAt)}</div>
+          </div>
+          <div class="item-amount-block">
+            <div class="item-amount" contenteditable="true" data-id="${it.id}" spellcheck="false">${fmtMoney(it.amount)}</div>
+            ${maturityHtml}
+          </div>
+          <div class="item-actions">
+            <button class="icon-btn" data-action="edit" data-id="${it.id}" title="Sửa">✏️</button>
+            <button class="icon-btn danger" data-action="delete" data-id="${it.id}" title="Xoá">🗑</button>
+          </div>
+        `;
+      }
       groupEl.appendChild(row);
     }
     container.appendChild(groupEl);
@@ -602,12 +712,31 @@ function renderList() {
   container.querySelectorAll('[data-action="delete"]').forEach(el => {
     el.addEventListener('click', () => deleteItem(el.dataset.id));
   });
+  container.querySelectorAll('[data-action="edit"]').forEach(el => {
+    el.addEventListener('click', () => { editingId = el.dataset.id; renderList(); });
+  });
+  container.querySelectorAll('[data-action="cancel-edit"]').forEach(el => {
+    el.addEventListener('click', () => { editingId = null; renderList(); });
+  });
+  container.querySelectorAll('[data-action="save-edit"]').forEach(el => {
+    el.addEventListener('click', () => saveEdit(el.dataset.id, el.closest('.item-row')));
+  });
+  container.querySelectorAll('.item-edit-row .edit-type').forEach(el => {
+    el.addEventListener('change', () => {
+      const extra = el.closest('.item-edit-form').querySelector('.item-edit-extra');
+      extra.style.display = el.value === 'saving' ? 'grid' : 'none';
+    });
+  });
 }
 
 function escapeHtml(s) {
   const div = document.createElement('div');
   div.textContent = s;
   return div.innerHTML;
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function onAmountEdit(e) {
@@ -628,6 +757,37 @@ function onAmountEdit(e) {
   render();
 }
 
+function saveEdit(id, rowEl) {
+  const it = items.find(i => i.id === id);
+  if (!it) return;
+
+  const name = rowEl.querySelector('.edit-name').value.trim();
+  const type = rowEl.querySelector('.edit-type').value;
+  const amount = parseFloat(rowEl.querySelector('.edit-amount').value);
+  const rateRaw = rowEl.querySelector('.edit-rate').value;
+  const endDateRaw = rowEl.querySelector('.edit-enddate').value;
+
+  if (!name || isNaN(amount)) return;
+
+  const oldAmount = it.amount;
+  it.name = name;
+  it.type = type;
+  it.amount = amount;
+  if (type === 'saving') {
+    it.rate = rateRaw !== '' ? parseFloat(rateRaw) : undefined;
+    it.endDate = endDateRaw || undefined;
+  } else {
+    delete it.rate;
+    delete it.endDate;
+  }
+  it.updatedAt = Date.now();
+
+  editingId = null;
+  saveData();
+  addLog(`Sửa <b>${escapeHtml(name)}</b>: ${fmtMoney(oldAmount)} → ${fmtMoney(amount)}`);
+  render();
+}
+
 function deleteItem(id) {
   const it = items.find(i => i.id === id);
   if (!it) return;
@@ -642,6 +802,8 @@ function addItem() {
   const nameEl = document.getElementById('inputName');
   const typeEl = document.getElementById('inputType');
   const amountEl = document.getElementById('inputAmount');
+  const rateEl = document.getElementById('inputRate');
+  const endDateEl = document.getElementById('inputEndDate');
 
   const name = nameEl.value.trim();
   const type = typeEl.value;
@@ -651,12 +813,19 @@ function addItem() {
   if (isNaN(amount)) { amountEl.focus(); return; }
 
   const it = { id: uid(), name, type, amount, updatedAt: Date.now() };
+  if (type === 'saving') {
+    if (rateEl.value !== '') it.rate = parseFloat(rateEl.value);
+    if (endDateEl.value) it.endDate = endDateEl.value;
+  }
   items.push(it);
   saveData();
-  addLog(`Thêm <b>${escapeHtml(name)}</b> (${TYPES[type].label}): ${fmtMoney(amount)}`);
+  const detail = type === 'saving' ? savingDetails(it) : '';
+  addLog(`Thêm <b>${escapeHtml(name)}</b> (${TYPES[type].label}): ${fmtMoney(amount)}${detail ? ' · ' + detail : ''}`);
 
   nameEl.value = '';
   amountEl.value = '';
+  rateEl.value = '';
+  endDateEl.value = '';
   nameEl.focus();
   render();
 }
@@ -715,6 +884,10 @@ function init() {
   document.getElementById('btnAdd').addEventListener('click', addItem);
   [document.getElementById('inputName'), document.getElementById('inputAmount')].forEach(el => {
     el.addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+  });
+
+  document.getElementById('inputType').addEventListener('change', e => {
+    document.getElementById('savingExtra').style.display = e.target.value === 'saving' ? 'grid' : 'none';
   });
 
   document.getElementById('filterBar').addEventListener('click', e => {

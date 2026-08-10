@@ -149,7 +149,7 @@ kbd {
 
 <header>
   <h1>Study Hub</h1>
-  <p>Chọn bài học hoặc nhấn phím tắt <kbd>1</kbd> – <kbd>5</kbd></p>
+  <p>Chọn bài học hoặc nhấn phím tắt <kbd>1</kbd> – <kbd>7</kbd></p>
 </header>
 
 <div class="grid">
@@ -202,15 +202,23 @@ kbd {
     <span class="card-tag">Tài chính</span>
   </a>
 
+  <a class="card" href="englishmaster.html" style="--card-color: #fb923c" tabindex="7" data-key="7">
+    <span class="card-key">7</span>
+    <div class="card-icon">🎓</div>
+    <div class="card-title">IELTS Master</div>
+    <div class="card-desc">4070 từ vựng IELTS theo 33 chủ đề. Flashcard + Spaced Repetition (SM-2), giới hạn từ mới mỗi ngày.</div>
+    <span class="card-tag">Từ vựng · SRS</span>
+  </a>
+
 </div>
 
 <footer>
-  Nhấn <kbd>1</kbd>–<kbd>6</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
+  Nhấn <kbd>1</kbd>–<kbd>7</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
 </footer>
 
 <script>
 document.addEventListener('keydown', e => {
-  if (['1','2','3','4','5','6'].includes(e.key)) {
+  if (['1','2','3','4','5','6','7'].includes(e.key)) {
     const card = document.querySelector(`.card[data-key="${e.key}"]`);
     if (card) card.click();
   }
