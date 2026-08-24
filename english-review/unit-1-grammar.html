@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 1 — Grammar — English Review</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234f8ef7'/><text x='16' y='23' font-size='20' text-anchor='middle' font-family='serif'>🐙</text></svg>">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #39d3f2;
+    --yellow: #e3b341;
+    --accent: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+  }
+  nav .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  nav .logo h1 { font-size: 17px; color: var(--accent); font-weight: 700; }
+  nav .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  nav .home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    padding: 5px 10px;
+    background: rgba(167,139,250,.08);
+    border: 1px solid rgba(167,139,250,.2);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s;
+  }
+  nav .home-btn:hover { background: rgba(167,139,250,.16); border-color: rgba(167,139,250,.4); }
+  nav a {
+    display: block;
+    padding: 7px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(167,139,250,.06);
+  }
+  nav .section-label {
+    padding: 16px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+
+  /* ── MAIN ── */
+  main {
+    margin-left: 260px;
+    padding: 48px 56px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    padding-top: 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+  h3 { font-size: 18px; color: var(--accent); margin: 32px 0 12px; font-weight: 600; }
+  h4 { font-size: 14px; color: var(--yellow); margin: 20px 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  p { margin-bottom: 14px; color: #c9d1d9; }
+
+  /* ── FORM BOX ── */
+  .form-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 14px 0 20px;
+    font-size: 13.5px;
+  }
+  .form-box .row { display: flex; gap: 10px; margin-bottom: 8px; align-items: baseline; }
+  .form-box .row:last-child { margin-bottom: 0; }
+  .form-box .lbl {
+    flex-shrink: 0;
+    width: 88px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+  }
+  .form-box .val { color: #c9d1d9; }
+  .form-box .val b { color: var(--cyan); font-weight: 600; }
+
+  code {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12.5px;
+    background: rgba(110,118,129,.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+
+  /* ── LABEL BADGE ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge-purple { background: rgba(188,140,255,.15); color: var(--purple); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+    font-size: 14px;
+  }
+  .callout.info { border-color: var(--blue); background: rgba(88,166,255,.07); }
+  .callout.warn { border-color: var(--orange); background: rgba(210,153,34,.07); }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .callout.info strong { color: var(--blue); }
+  .callout.warn strong { color: var(--orange); }
+  .callout .ex { margin-top: 8px; font-size: 13.5px; }
+  .callout .ex .ok { color: var(--green); }
+  .callout .ex .no { color: var(--red); }
+
+  /* ── COMPARE (US vs UK) ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0 18px;
+  }
+  .compare-col {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .compare-col h5 { font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+  .compare-col.us h5 { color: var(--red); }
+  .compare-col.uk h5 { color: var(--blue); }
+  .compare-col p { font-size: 13.5px; margin: 0; color: #c9d1d9; }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(48,54,61,.6);
+    color: #c9d1d9;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 12px; }
+  td em { color: var(--muted); font-style: italic; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ SIDEBAR ════════════════════════ -->
+<nav>
+  <div class="logo">
+    <h1>🧩 Unit 1 — Grammar</h1>
+    <p>Present time</p>
+    <a class="home-btn" href="../english-review.html">← English Review</a>
+  </div>
+
+  <div class="section-label">Present time</div>
+  <a href="#present-simple">Present Simple</a>
+  <a href="#present-continuous">Present Continuous</a>
+  <a href="#present-perfect-simple">Present Perfect Simple</a>
+  <a href="#us-vs-uk">Watch out! US vs UK</a>
+  <a href="#present-perfect-continuous">Present Perfect Continuous</a>
+  <a href="#stative-verbs">Stative Verbs</a>
+</nav>
+
+<!-- ════════════════════════ MAIN ════════════════════════ -->
+<main>
+
+<!-- ── HERO ── -->
+<div style="margin-bottom:48px;">
+  <div style="font-size:48px;margin-bottom:16px;">🧩</div>
+  <h1 style="font-size:32px;font-weight:800;margin-bottom:8px;">Present time</h1>
+  <p style="font-size:16px;color:var(--muted);max-width:620px;">present simple, present continuous, present perfect simple, present perfect continuous, stative verbs.</p>
+</div>
+
+<!-- ════════ PRESENT SIMPLE ════════ -->
+<h2 id="present-simple">Present Simple</h2>
+
+<h4>Form</h4>
+<div class="form-box">
+  <div class="row"><span class="lbl">Statement</span><span class="val">I/you/we/they <b>travel</b>... &nbsp; He/she/it <b>travels</b>...</span></div>
+  <div class="row"><span class="lbl">Negative</span><span class="val">I/you/we/they <b>don't travel</b>... &nbsp; He/she/it <b>doesn't travel</b>...</span></div>
+  <div class="row"><span class="lbl">Question</span><span class="val"><b>Do</b> I/you/we/they travel...? &nbsp; <b>Does</b> he/she/it travel...?</span></div>
+</div>
+
+<h4>Use</h4>
+<table>
+  <tr><th>Use</th><th>Example</th></tr>
+  <tr><td>Current habits</td><td>Toby <strong>walks</strong> to work.</td></tr>
+  <tr><td>To talk about how often things happen</td><td>Angela <strong>doesn't visit</strong> us very often.</td></tr>
+  <tr><td>Permanent situations</td><td>Carlo <strong>works</strong> in a travel agent's.</td></tr>
+  <tr><td>States</td><td><strong>Do</strong> you <strong>have</strong> an up-to-date passport?</td></tr>
+  <tr><td>General truths and facts</td><td>Poland <strong>is</strong> in the European Union.</td></tr>
+</table>
+
+<div class="callout warn">
+  <strong>Watch out!</strong>
+  We can also use <code>do</code>/<code>does</code> in present simple statements for emphasis.
+  <div class="ex">"You don't like going by bus, do you?" "Actually, I <strong>do</strong> like going by bus for short distances."</div>
+  <div class="ex">The bus isn't quicker than the train but it <strong>does</strong> stop right outside the factory.</div>
+</div>
+
+<!-- ════════ PRESENT CONTINUOUS ════════ -->
+<h2 id="present-continuous">Present Continuous</h2>
+
+<h4>Form</h4>
+<div class="form-box">
+  <div class="row"><span class="lbl">Statement</span><span class="val">I <b>am driving</b>... &nbsp; You/we/they <b>are driving</b>... &nbsp; He/she/it <b>is driving</b>...</span></div>
+  <div class="row"><span class="lbl">Negative</span><span class="val">I'<b>m not driving</b>... &nbsp; You/we/they <b>aren't driving</b>... (or you're/we're/they're not driving...) &nbsp; He/she/it <b>isn't driving</b>... (or he's/she's/it's not driving...)</span></div>
+  <div class="row"><span class="lbl">Question</span><span class="val"><b>Am</b> I driving...? &nbsp; <b>Are</b> you/we/they driving...? &nbsp; <b>Is</b> he/she/it driving...?</span></div>
+</div>
+
+<h4>Use</h4>
+<table>
+  <tr><th>Use</th><th>Example</th></tr>
+  <tr><td>Actions happening now</td><td>Mike <strong>is driving</strong> to work at the moment.</td></tr>
+  <tr><td>Temporary series of actions</td><td>Taxi drivers <strong>aren't stopping</strong> at the train station because of the roadworks.</td></tr>
+  <tr><td>Temporary situations</td><td><strong>Are</strong> they <strong>staying</strong> in a hotel near the Olympic stadium?</td></tr>
+  <tr><td>Changing and developing situations</td><td>Holidays abroad <strong>are becoming</strong> increasingly popular.</td></tr>
+  <tr><td>Annoying habits (usually with <em>always</em>)</td><td>Dad <strong>is always cleaning</strong> the car when I want to use it!</td></tr>
+</table>
+
+<!-- ════════ PRESENT PERFECT SIMPLE ════════ -->
+<h2 id="present-perfect-simple">Present Perfect Simple</h2>
+
+<h4>Form &nbsp;<span class="badge badge-purple">have/has + past participle</span></h4>
+<div class="form-box">
+  <div class="row"><span class="lbl">Statement</span><span class="val">I/you/we/they <b>have flown</b>... &nbsp; He/she/it <b>has flown</b>...</span></div>
+  <div class="row"><span class="lbl">Negative</span><span class="val">I/you/we/they <b>haven't flown</b>... &nbsp; He/she/it <b>hasn't flown</b>...</span></div>
+  <div class="row"><span class="lbl">Question</span><span class="val"><b>Have</b> I/you/we/they flown...? &nbsp; <b>Has</b> he/she/it flown...?</span></div>
+</div>
+
+<h4>Use</h4>
+<table>
+  <tr><th>Use</th><th>Example</th></tr>
+  <tr><td>Situations and states that started in the past and are still true</td><td>She'<strong>s had</strong> her motorbike for over six years.</td></tr>
+  <tr><td>A series of actions continuing up to now</td><td>We'<strong>ve travelled</strong> by taxi, bus, plane and train — all in the last twenty-four hours!</td></tr>
+  <tr><td>Completed actions at a time in the past which is not mentioned</td><td><strong>Have</strong> you ever <strong>flown</strong> in a helicopter?</td></tr>
+  <tr><td>Completed actions where the important thing is the present result</td><td>I'<strong>ve booked</strong> the coach tickets.</td></tr>
+</table>
+
+<h2 id="us-vs-uk" style="padding-top:0;border-top:none;margin-top:32px;font-size:20px;">Watch out! <span class="badge badge-purple">US vs UK</span></h2>
+
+<div class="callout info">
+  <strong>"First/second time" phrases</strong>
+  Phrases such as <em>It's the first/second/etc time ...</em> are followed by the present perfect simple.
+  <div class="ex"><span class="ok">✓</span> It's the second time I've been on a plane.</div>
+</div>
+
+<p>Speakers of American English often use the past simple in situations where speakers of British English would use the present perfect simple.</p>
+<div class="compare">
+  <div class="compare-col us">
+    <h5>US</h5>
+    <p>We already <strong>saw</strong> the Sphinx.</p>
+  </div>
+  <div class="compare-col uk">
+    <h5>UK</h5>
+    <p>We'<strong>ve</strong> already <strong>seen</strong> the Sphinx.</p>
+  </div>
+</div>
+
+<p>Speakers of American English use <code>gotten</code> as the past participle of the verb <code>get</code>, except when 'get' means 'have' or 'possess'. Speakers of British English only ever use <code>got</code>.</p>
+<div class="compare">
+  <div class="compare-col us">
+    <h5>US</h5>
+    <p>We've already <strong>gotten</strong> Dan a new backpack for his summer vacation.</p>
+  </div>
+  <div class="compare-col uk">
+    <h5>UK</h5>
+    <p>We've already <strong>got</strong> Dan a new rucksack for his summer holiday.</p>
+  </div>
+</div>
+
+<!-- ════════ PRESENT PERFECT CONTINUOUS ════════ -->
+<h2 id="present-perfect-continuous">Present Perfect Continuous</h2>
+
+<h4>Form</h4>
+<div class="form-box">
+  <div class="row"><span class="lbl">Statement</span><span class="val">I/you/we/they <b>have been travelling</b>... &nbsp; He/she/it <b>has been travelling</b>...</span></div>
+  <div class="row"><span class="lbl">Negative</span><span class="val">I/you/we/they <b>haven't been travelling</b>... &nbsp; He/she/it <b>hasn't been travelling</b>...</span></div>
+  <div class="row"><span class="lbl">Question</span><span class="val"><b>Have</b> I/you/we/they been travelling...? &nbsp; <b>Has</b> he/she/it been travelling...?</span></div>
+</div>
+
+<h4>Use</h4>
+<table>
+  <tr><th>Use</th><th>Example</th></tr>
+  <tr><td>Actions continuing up to the present moment</td><td>We <strong>have been driving</strong> for hours. Can't we have a break soon?</td></tr>
+  <tr><td>Actions stopping just before the present moment</td><td>I'm out of breath because I<strong>'ve been running</strong> to get here in time.</td></tr>
+</table>
+
+<div class="callout warn">
+  <strong>Watch out!</strong>
+  The present perfect continuous is often used with words and phrases like <em>all day/week/year/etc</em>, <em>for</em>, <em>since</em>, <em>just</em>, etc.
+  <div class="ex"><span class="ok">✓</span> We've been walking for hours and I need a rest.</div>
+  It is <strong>not</strong> normally used with the words <em>ever</em> and <em>never</em>.
+  <div class="ex"><span class="ok">✓</span> Have you ever flown in a helicopter before?</div>
+  <div class="ex"><span class="no">✗</span> Have you ever been flying in a helicopter before?</div>
+</div>
+
+<div class="callout info">
+  <strong>Perfect simple vs. perfect continuous</strong>
+  Sometimes there is very little difference in meaning between the present perfect simple and the present perfect continuous, and sometimes there is a difference in meaning.
+  <div class="ex"><span class="ok">✓</span> I have worked at the airport for four years. = I have been working at the airport for four years.</div>
+  <div class="ex"><span class="ok">✓</span> I have read that book about cruise ships. <em>(I have finished it.)</em> &nbsp; I have been reading that book about cruise ships. <em>(I have not finished it.)</em></div>
+</div>
+
+<!-- ════════ STATIVE VERBS ════════ -->
+<h2 id="stative-verbs">Stative Verbs</h2>
+
+<p>Stative verbs are not normally used in continuous tenses because they don't describe actions.</p>
+<div class="callout warn">
+  <div class="ex"><span class="ok">✓</span> I see what you mean.</div>
+  <div class="ex"><span class="no">✗</span> I am seeing what you mean.</div>
+</div>
+
+<h4>Use — stative verbs often refer to</h4>
+<table>
+  <tr><th>Category</th><th>Example verbs</th></tr>
+  <tr><td>thinking</td><td><code>believe</code>, <code>imagine</code>, <code>know</code>, <code>mean</code>, <code>think</code>, <code>understand</code></td></tr>
+  <tr><td>existence</td><td><code>be</code>, <code>exist</code></td></tr>
+  <tr><td>emotions</td><td><code>hate</code>, <code>imagine</code>, <code>like</code>, <code>love</code>, <code>need</code>, <code>prefer</code>, <code>satisfy</code>, <code>want</code></td></tr>
+  <tr><td>the human senses</td><td><code>hear</code>, <code>see</code>, <code>smell</code>, <code>sound</code>, <code>taste</code></td></tr>
+  <tr><td>appearance</td><td><code>appear</code>, <code>look</code>, <code>resemble</code>, <code>seem</code></td></tr>
+  <tr><td>possession and relationships between things</td><td><code>belong to</code>, <code>consist of</code>, <code>have</code>, <code>include</code>, <code>involve</code>, <code>own</code></td></tr>
+</table>
+
+<div class="callout info">
+  <strong>Watch out!</strong>
+  Some verbs (such as <code>be</code>, <code>have</code>, <code>imagine</code>, <code>look</code>, <code>see</code>, <code>smell</code>, <code>taste</code>, <code>think</code>) are stative with one meaning and non-stative with another meaning.
+  <div class="ex"><span class="ok">✓</span> Do you have your plane ticket with you? <em>(state: possession)</em></div>
+  <div class="ex"><span class="ok">✓</span> Are you having lunch at the moment? <em>(action: eating)</em></div>
+</div>
+
+<div style="margin-top:60px;padding:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-align:center;">
+  <div style="font-size:28px;margin-bottom:8px;">➡️</div>
+  <p style="font-size:15px;color:var(--text);margin:0;font-weight:600;">Next up</p>
+  <p style="font-size:13px;color:var(--muted);margin:8px 0 0;"><a href="unit-2-vocabulary.html" style="color:var(--accent);">Unit 2 — Travel and Transport →</a></p>
+</div>
+
+</main>
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('h2[id]');
+  const links = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 — Travel and Transport — English Review</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234f8ef7'/><text x='16' y='23' font-size='20' text-anchor='middle' font-family='serif'>🐙</text></svg>">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #39d3f2;
+    --yellow: #e3b341;
+    --accent: #2dd4bf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+  }
+  nav .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  nav .logo h1 { font-size: 17px; color: var(--accent); font-weight: 700; }
+  nav .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  nav .home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    padding: 5px 10px;
+    background: rgba(45,212,191,.08);
+    border: 1px solid rgba(45,212,191,.2);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s;
+  }
+  nav .home-btn:hover { background: rgba(45,212,191,.16); border-color: rgba(45,212,191,.4); }
+  nav a {
+    display: block;
+    padding: 7px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(45,212,191,.06);
+  }
+  nav .section-label {
+    padding: 16px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+
+  /* ── MAIN ── */
+  main {
+    margin-left: 260px;
+    padding: 48px 56px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    padding-top: 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+  h3 { font-size: 18px; color: var(--accent); margin: 32px 0 12px; font-weight: 600; }
+  h4 { font-size: 14px; color: var(--yellow); margin: 20px 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  p { margin-bottom: 14px; color: #c9d1d9; }
+
+  code {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12.5px;
+    background: rgba(110,118,129,.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+    font-size: 14px;
+  }
+  .callout.info { border-color: var(--blue); background: rgba(88,166,255,.07); }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .callout.info strong { color: var(--blue); }
+
+  /* ── WORD-GROUP CHIPS (topic vocabulary in contrast) ── */
+  .chip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin: 14px 0 20px;
+  }
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    color: var(--cyan);
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(48,54,61,.6);
+    color: #c9d1d9;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 12px; }
+  td.w { white-space: nowrap; font-weight: 600; color: var(--text); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ SIDEBAR ════════════════════════ -->
+<nav>
+  <div class="logo">
+    <h1>✈️ Unit 2 — Vocabulary</h1>
+    <p>Travel and transport</p>
+    <a class="home-btn" href="../english-review.html">← English Review</a>
+  </div>
+
+  <div class="section-label">Travel and transport</div>
+  <a href="#topic-vocab">Topic Vocabulary in Contrast</a>
+  <a href="#phrasal-verbs">Phrasal Verbs</a>
+  <a href="#phrases-collocations">Phrases and Collocations</a>
+  <a href="#word-patterns">Word Patterns</a>
+  <a href="#word-formation">Word Formation</a>
+</nav>
+
+<!-- ════════════════════════ MAIN ════════════════════════ -->
+<main>
+
+<!-- ── HERO ── -->
+<div style="margin-bottom:48px;">
+  <div style="font-size:48px;margin-bottom:16px;">✈️</div>
+  <h1 style="font-size:32px;font-weight:800;margin-bottom:8px;">Travel and transport</h1>
+  <p style="font-size:16px;color:var(--muted);max-width:620px;">Từ vựng đối chiếu, phrasal verbs, collocations, word patterns và word formation xoay quanh chủ đề du lịch &amp; giao thông.</p>
+</div>
+
+<!-- ════════ TOPIC VOCABULARY IN CONTRAST ════════ -->
+<h2 id="topic-vocab">Topic Vocabulary in Contrast</h2>
+<p>Các nhóm từ gần nghĩa nhưng dùng khác ngữ cảnh — so sánh nghĩa và cách dùng của từng từ trong nhóm.</p>
+
+<div class="chip-grid">
+  <div class="chip">voyage / journey / trip / travel / excursion</div>
+  <div class="chip">view / sight</div>
+  <div class="chip">world / earth</div>
+  <div class="chip">area / territory</div>
+  <div class="chip">season / period</div>
+  <div class="chip">live / stay</div>
+  <div class="chip">border / edge / line</div>
+  <div class="chip">length / distance</div>
+  <div class="chip">guide / lead</div>
+  <div class="chip">native / home</div>
+  <div class="chip">fare / ticket / fee</div>
+  <div class="chip">miss / lose</div>
+  <div class="chip">take / bring / go</div>
+  <div class="chip">book / keep</div>
+  <div class="chip">arrive / reach</div>
+</div>
+
+<!-- ════════ PHRASAL VERBS ════════ -->
+<h2 id="phrasal-verbs">Phrasal Verbs</h2>
+<table>
+  <tr><th>Phrasal verb</th><th>Meaning</th></tr>
+  <tr><td class="w"><code>catch up with</code></td><td>reach the same point/level as</td></tr>
+  <tr><td class="w"><code>check in</code></td><td>register at a hotel or an airport</td></tr>
+  <tr><td class="w"><code>check out</code></td><td>leave a hotel; investigate</td></tr>
+  <tr><td class="w"><code>drop off</code></td><td>let someone get out of a vehicle; fall asleep</td></tr>
+  <tr><td class="w"><code>get back</code></td><td>return from a place</td></tr>
+  <tr><td class="w"><code>go away</code></td><td>go on holiday</td></tr>
+  <tr><td class="w"><code>keep up with</code></td><td>stay at the same point/level as</td></tr>
+  <tr><td class="w"><code>make for</code></td><td>go in the direction of</td></tr>
+  <tr><td class="w"><code>pick up</code></td><td>stop in a vehicle to give someone a lift</td></tr>
+  <tr><td class="w"><code>pull in</code></td><td>stop by the side of the road in a car</td></tr>
+  <tr><td class="w"><code>run over</code></td><td>hit with a car</td></tr>
+  <tr><td class="w"><code>see off</code></td><td>go to a train station, etc, to see someone leave</td></tr>
+  <tr><td class="w"><code>set out/off</code></td><td>start a journey</td></tr>
+  <tr><td class="w"><code>take off</code></td><td>leave the ground</td></tr>
+  <tr><td class="w"><code>turn round</code></td><td>go back in the opposite direction</td></tr>
+</table>
+
+<!-- ════════ PHRASES AND COLLOCATIONS ════════ -->
+<h2 id="phrases-collocations">Phrases and Collocations</h2>
+<table>
+  <tr><th>Word</th><th>Collocations</th></tr>
+  <tr><td class="w">accident</td><td>have an accident; be (involved) in an accident; do sth by accident</td></tr>
+  <tr><td class="w">advance</td><td>in advance; advance to/towards a place</td></tr>
+  <tr><td class="w">ahead</td><td>go straight ahead; go ahead; be ahead of sth/sb</td></tr>
+  <tr><td class="w">direction</td><td>a change of direction; in the direction of sth; in this/that direction</td></tr>
+  <tr><td class="w">head</td><td>off the top of your head; head for/towards a place; head over heels (in love)</td></tr>
+  <tr><td class="w">holiday</td><td>go/be on holiday; have/take a holiday; bank holiday</td></tr>
+  <tr><td class="w">left</td><td>go/turn/etc left; on the left; on the left-hand side; in the left-hand corner; left-handed</td></tr>
+  <tr><td class="w">route</td><td>plan your/a route; take a route</td></tr>
+  <tr><td class="w">sights</td><td>see the sights</td></tr>
+  <tr><td class="w">sightseeing</td><td>go sightseeing</td></tr>
+  <tr><td class="w">speed</td><td>at (high/full/etc) speed; a burst of speed; speed limit</td></tr>
+  <tr><td class="w">tour</td><td>go on/take a tour of/(a)round somewhere; tour a place; tour guide</td></tr>
+  <tr><td class="w">trip</td><td>business trip; school trip; go on a trip; take a trip (to a place)</td></tr>
+  <tr><td class="w">way</td><td>lose/make/find your way; in a way; on the way; go all the way (to sth/swh)</td></tr>
+</table>
+
+<!-- ════════ WORD PATTERNS ════════ -->
+<h2 id="word-patterns">Word Patterns</h2>
+<p>Cấu trúc đi kèm giới từ / dạng động từ theo sau — cách nhiều động từ &amp; tính từ trong bài kết hợp với giới từ, <code>to do</code> hoặc <code>doing</code>.</p>
+<table>
+  <tr><th>Word</th><th>Pattern(s)</th></tr>
+  <tr><td class="w">afraid</td><td>afraid of sth/sb/doing; afraid to do</td></tr>
+  <tr><td class="w">appear</td><td>appear to be</td></tr>
+  <tr><td class="w">arrange</td><td>arrange sth (with sb); arrange for sb to do</td></tr>
+  <tr><td class="w">arrive</td><td>arrive in/at a place; arrive here/there</td></tr>
+  <tr><td class="w">continue</td><td>continue sth/doing; continue to do; continue with sth</td></tr>
+  <tr><td class="w">differ</td><td>differ from sth/sb</td></tr>
+  <tr><td class="w">dream</td><td>dream about/of sth/sb/doing</td></tr>
+  <tr><td class="w">invite</td><td>invite sb to do</td></tr>
+  <tr><td class="w">keen</td><td>keen to do; keen on sth/sb/doing</td></tr>
+  <tr><td class="w">live</td><td>live in/at a place; live on/for sth; live here/there</td></tr>
+  <tr><td class="w">regret</td><td>regret (not) doing; regret sth; regret to tell/inform you</td></tr>
+  <tr><td class="w">think</td><td>think of/about sth/sb/doing</td></tr>
+  <tr><td class="w">write</td><td>write about sth/sb/doing; write (sth) (to sb); write sb sth; write sth down</td></tr>
+</table>
+
+<!-- ════════ WORD FORMATION ════════ -->
+<h2 id="word-formation">Word Formation</h2>
+<table>
+  <tr><th>Base word</th><th>Related forms</th></tr>
+  <tr><td class="w">arrange</td><td>rearrange, arrangement</td></tr>
+  <tr><td class="w">arrive</td><td>arrival</td></tr>
+  <tr><td class="w">broad</td><td>breadth, broaden</td></tr>
+  <tr><td class="w">culture</td><td>cultural(ly), (un)cultured</td></tr>
+  <tr><td class="w">differ</td><td>different(ly), difference</td></tr>
+  <tr><td class="w">direct</td><td>indirect, direction, director, (in)directly</td></tr>
+  <tr><td class="w">distant</td><td>distantly, distance</td></tr>
+  <tr><td class="w">enter</td><td>entrance</td></tr>
+  <tr><td class="w">inhabit</td><td>inhabitant</td></tr>
+  <tr><td class="w">recognise</td><td>(un)recognisable, recognition</td></tr>
+  <tr><td class="w">time</td><td>timetable</td></tr>
+  <tr><td class="w">tour</td><td>tourism, tourist</td></tr>
+  <tr><td class="w">world</td><td>worldwide</td></tr>
+  <tr><td class="w">photograph</td><td>photography, photographer, photographic</td></tr>
+</table>
+
+<div class="callout info">
+  <strong>Ghi chú</strong>
+  Định nghĩa chi tiết của các nhóm từ đối chiếu (Topic Vocabulary in Contrast) tham khảo thêm ở nguồn gốc bài học (trang 186) nếu cần tra cứu sâu hơn.
+</div>
+
+<div style="margin-top:60px;padding:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-align:center;">
+  <div style="font-size:28px;margin-bottom:8px;">⬅️</div>
+  <p style="font-size:15px;color:var(--text);margin:0;font-weight:600;">Ôn lại</p>
+  <p style="font-size:13px;color:var(--muted);margin:8px 0 0;"><a href="unit-1-grammar.html" style="color:var(--accent);">← Unit 1 — Grammar</a></p>
+</div>
+
+</main>
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('h2[id]');
+  const links = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

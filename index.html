@@ -149,7 +149,7 @@ kbd {
 
 <header>
   <h1>Study Hub</h1>
-  <p>Chọn bài học hoặc nhấn phím tắt <kbd>1</kbd> – <kbd>7</kbd></p>
+  <p>Chọn bài học hoặc nhấn phím tắt <kbd>1</kbd> – <kbd>8</kbd></p>
 </header>
 
 <div class="grid">
@@ -210,15 +210,23 @@ kbd {
     <span class="card-tag">Từ vựng · SRS</span>
   </a>
 
+  <a class="card" href="english-review.html" style="--card-color: #a78bfa" tabindex="8" data-key="8">
+    <span class="card-key">8</span>
+    <div class="card-icon">📖</div>
+    <div class="card-title">English Review</div>
+    <div class="card-desc">Ôn tập ngữ pháp và từ vựng tiếng Anh theo Unit. Unit 1: Present time (grammar). Unit 2: Travel and transport (vocabulary). Sẽ có thêm Unit mới.</div>
+    <span class="card-tag">Ôn tập</span>
+  </a>
+
 </div>
 
 <footer>
-  Nhấn <kbd>1</kbd>–<kbd>7</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
+  Nhấn <kbd>1</kbd>–<kbd>8</kbd> để mở nhanh &nbsp;·&nbsp; <kbd>Enter</kbd> hoặc click để vào bài
 </footer>
 
 <script>
 document.addEventListener('keydown', e => {
-  if (['1','2','3','4','5','6','7'].includes(e.key)) {
+  if (['1','2','3','4','5','6','7','8'].includes(e.key)) {
     const card = document.querySelector(`.card[data-key="${e.key}"]`);
     if (card) card.click();
   }

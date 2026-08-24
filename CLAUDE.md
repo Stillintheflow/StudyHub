@@ -18,6 +18,9 @@ Open any `.html` file directly in a browser — no server needed. For `vocabmast
 | `englishmaster.html` | IELTS vocabulary SRS flashcard app, 4070 words across 33 topics (SM-2 algorithm, localStorage). Thin shell that loads `englishmaster/style.css`, `englishmaster/data.js`, `englishmaster/app.js` |
 | `docker-guide.html` | Docker reference guide with sidebar navigation |
 | `angular-reading-guide.html` | Guide for reading Angular codebases, uses highlight.js via CDN |
+| `english-review.html` | Hub/landing page for English review material, organized by Unit. Card grid links out to child pages in `english-review/`; add a new card + child page here for each future Unit |
+| `english-review/unit-1-grammar.html` | Unit 1 — Grammar: present time (present simple/continuous/perfect simple/perfect continuous, stative verbs). Single-file guide page, same sidebar-nav pattern as `docker-guide.html` |
+| `english-review/unit-2-vocabulary.html` | Unit 2 — Travel and transport vocabulary: topic vocabulary in contrast, phrasal verbs, collocations, word patterns, word formation. Same pattern as unit-1-grammar.html |
 | `than-so-hoc-le-van-quang.html` | Numerology (Thần Số Học) personal page |
 
 ## Architecture pattern
